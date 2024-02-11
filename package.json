@@ -1,0 +1,30 @@
+{
+  "name": "e-commerce-api",
+  "version": "1.0.0",
+  "description": "this api project is real-world API for E-Commerce website. this api you can ues your (web-app & mobile-app) and many more🙂",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muhammadranju/e-commerce-api.git"
+  },
+  "keywords": [
+    "e-commerce-api",
+    "api",
+    "back-end",
+    "node.js",
+    "web",
+    "api",
+    "mobile",
+    "api"
+  ],
+  "author": "Muhammad Ranju",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muhammadranju/e-commerce-api/issues"
+  },
+  "homepage": "https://github.com/muhammadranju/e-commerce-api#readme"
+}
