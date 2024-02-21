@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { DATABASE_NAME, DATABASE_QUERY } = require("../constant");
+const { DATABASE_NAME, DATABASE_QUERY } = require("../constants");
 
 const MONGODB_URI = process.env.MONGODB_URI; // REPLACE WITH YOUR OWN MONGODB URI
 const MONGODB_URI_LOCAL = process.env.MONGODB_URI_LOCAL; // REPLACE WITH YOUR LOCAL MONGODB URI
