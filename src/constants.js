@@ -62,8 +62,14 @@ const AvailableSocialLogins = Object.values(UserLoginType);
  */
 const ModelRefNames = {
   User: "User",
-  Post: "Post",
+  Product: "Product",
   Comment: "Comment",
+  Order: "Orders",
+  Payment: "Payment",
+  Category: "Category",
+  Cart: "Cart",
+  Wishlist: "Wishlist",
+  Brand: "Brand",
 };
 
 /**
@@ -75,6 +81,12 @@ const VerifyStatus = {
 };
 const DATABASE_NAME = "e-commerce-api";
 const DATABASE_QUERY = "?retryWrites=true&w=majority";
+
+const Gender = {
+  MALE: "MALE",
+  FEMALE: "FEMALE",
+  OTHER: "OTHER",
+};
 
 module.exports = {
   UserRolesEnum,
@@ -92,4 +104,5 @@ module.exports = {
   DATABASE_NAME,
   DATABASE_QUERY,
   ApiVersion,
+  Gender,
 };
