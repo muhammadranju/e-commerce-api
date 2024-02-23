@@ -34,6 +34,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.3",
+    "mongoose-aggregate-paginate-v2": "^1.0.7",
     "morgan": "^1.10.0",
     "sslcommerz": "^1.7.0"
   }
