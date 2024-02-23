@@ -32,8 +32,43 @@ const UserCommentStatusEnum = {
   PENDING: "PENDING",
   SUSPENDED: "SUSPENDED",
 };
-
 const AvailableCommentStatus = Object.values(UserCommentStatusEnum);
+
+/**
+ * @type {{ PENDING: "PENDING"; CANCELLED: "CANCELLED"; DELIVERED: "DELIVERED"; } as const}
+ */
+const OrderStatusEnum = {
+  PENDING: "PENDING",
+  CANCELLED: "CANCELLED",
+  DELIVERED: "DELIVERED",
+};
+const AvailableOrderStatuses = Object.values(OrderStatusEnum);
+
+/**
+ * @type {{ SUCCEEDED: "SUCCEEDED"; PENDING: "PENDING"; CANCELLED: "CANCELLED"; FAILED: "FAILED"; REFUNDED: "REFUNDED" } as const}
+ */
+
+const PaymentStatus = {
+  SUCCEEDED: "SUCCEEDED",
+  PENDING: "PENDING",
+  CANCELLED: "CANCELLED",
+  FAILED: "FAILED",
+  REFUNDED: "REFUNDED",
+};
+const AvailablePaymentStatus = Object.values(PaymentStatus);
+
+/**
+ * @type {{ CREDIT_CARD: "CREDIT_CARD"; DEBIT_CARD: "DEBIT_CARD"; NET_BANKING : "NET_BANKING "; WALLET: "WALLET"; CASH_ON_DELIVERY: "CASH_ON_DELIVERY"; } as const}
+ */
+const PaymentMethods = {
+  CREDIT_CARD: "CREDIT_CARD",
+  DEBIT_CARD: "DEBIT_CARD",
+  NET_BANKING: "NET_BANKING",
+  WALLET: "WALLET",
+  FAILED: "FAILED",
+  CASH_ON_DELIVERY: "CASH_ON_DELIVERY",
+};
+const AvailablePaymentMethods = Object.values(PaymentMethods);
 
 /**
  * @type {{ PENDING:"PENDING", PUBLISHED:"PUBLISHED", DRAFT:"DRAFT" } as const}
@@ -43,7 +78,6 @@ const PostStatusEnum = {
   PUBLISHED: "PUBLISHED",
   DRAFT: "DRAFT",
 };
-
 const AvailablePostStatus = Object.values(PostStatusEnum);
 
 /**
@@ -54,22 +88,24 @@ const UserLoginType = {
   GITHUB: "GITHUB",
   EMAIL_PASSWORD: "EMAIL_PASSWORD",
 };
-
 const AvailableSocialLogins = Object.values(UserLoginType);
 
 /**
- * @type {{ User:"User", Post:"Post", Comment:"Comment" } as const}
+ * @type {{ User:"User"; Product:"Product"; Comment:"Comment"; Order:"Order"; Seller:"Seller"; Payment:"Payment"; Category:"Category"; Cart:"Cart"; Wishlist:"Wishlist"; Brand:"Brand"; Address:"Address"; OrdersItem:"OrdersItem";} as const}
  */
 const ModelRefNames = {
   User: "User",
   Product: "Product",
   Comment: "Comment",
-  Order: "Orders",
+  Order: "Order",
+  Seller: "Seller",
   Payment: "Payment",
   Category: "Category",
   Cart: "Cart",
   Wishlist: "Wishlist",
   Brand: "Brand",
+  Address: "Address",
+  OrdersItem: "OrdersItem",
 };
 
 /**
@@ -105,4 +141,10 @@ module.exports = {
   DATABASE_QUERY,
   ApiVersion,
   Gender,
+  AvailableOrderStatuses,
+  OrderStatusEnum,
+  AvailablePaymentMethods,
+  PaymentMethods,
+  AvailablePaymentStatus,
+  PaymentStatus,
 };
