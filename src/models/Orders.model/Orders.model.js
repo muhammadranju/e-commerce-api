@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const { ModelRefNames } = require("../../constants");
+const { ModelRefNames, OrderStatusEnum } = require("../../constants");
 
 const orderSchema = new Schema(
   {
@@ -82,8 +82,15 @@ const orderSchema = new Schema(
     // Order status
     status: {
       type: String,
-      enum: ["placed", "processing", "shipped", "delivered", "cancelled"],
-      default: "placed",
+      enum: [
+        OrderStatusEnum.PLACED,
+        OrderStatusEnum.PROCESSING,
+        OrderStatusEnum.SHIPPED,
+        OrderStatusEnum.DELIVERED,
+        OrderStatusEnum.PENDING,
+        OrderStatusEnum.CANCELLED,
+      ],
+      default: OrderStatusEnum.PLACED,
     },
   },
   { timestamps: true }

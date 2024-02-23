@@ -35,12 +35,16 @@ const UserCommentStatusEnum = {
 const AvailableCommentStatus = Object.values(UserCommentStatusEnum);
 
 /**
- * @type {{ PENDING: "PENDING"; CANCELLED: "CANCELLED"; DELIVERED: "DELIVERED"; } as const}
+ * @type {{ PENDING: "PENDING"; CANCELLED: "CANCELLED"; DELIVERED: "DELIVERED"; PLACED: "PLACED"; PROCESSING: "PROCESSING"; SHIPPED: "SHIPPED"; } as const}
  */
+
 const OrderStatusEnum = {
   PENDING: "PENDING",
   CANCELLED: "CANCELLED",
   DELIVERED: "DELIVERED",
+  PLACED: "PLACED ",
+  PROCESSING: "PROCESSING  ",
+  SHIPPED: "SHIPPED  ",
 };
 const AvailableOrderStatuses = Object.values(OrderStatusEnum);
 
