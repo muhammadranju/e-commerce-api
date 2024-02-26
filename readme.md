@@ -1,7 +1,6 @@
 # API Design all kinds of info blow here
 
 **This Notion File is all About this project**
-
 ### Notion file link: https://muhammadranju.notion.site/e-commerce-api-dca824a1c151425ca3410308b908a3b4?pvs=4
 
 ### Diagrams file link: https://drive.google.com/file/d/1jlUK_5UgLy0KXmZiGfFXLtTUvjvSoqlE/view?usp=sharing
@@ -16,9 +15,7 @@ To develop this project run
   npm start
   http://localhost:3000/api/v1
 ```
-
 To deploy this project run
-
 ```bash
   npm run dev
   http://localhost:3000/api/v1
@@ -50,19 +47,17 @@ Start the server
   npm run dev
 ```
 
-## Authors
-
-- [@muhammadranju](https://www.github.com/muhammadranju)
 
 ## Usage/Examples
 
 ```javascript
-import Component from "my-project";
+import Component from 'my-project'
 
 function App() {
-  return <Component />;
+  return <Component />
 }
 ```
+
 
 ## Environment Variables
 
@@ -72,15 +67,15 @@ To run this project, you will need to add the following environment variables to
 
 `PORT` 3030
 
-`MONGODB_URI` "mongodb+srv://< username>:< password>@cluster0.jzvet.mongodb.net/?retryWrites=true&w=majority"
+`MONGODB_URI` "mongodb+srv://<username>:<password>@cluster0.jzvet.mongodb.net/?retryWrites=true&w=majority"
 
-`ACCESS_TOKEN_SECRET` "**************\*\*\***************"
+`ACCESS_TOKEN_SECRET` "*******************************"
 
-`ACCESS_TOKEN_EXPIRY` "**************\*\*\***************"
+`ACCESS_TOKEN_EXPIRY` "*******************************"
 
-`REFRESH_TOKEN_SECRET` "**************\*\*\***************"
+`REFRESH_TOKEN_SECRET` "*******************************"
 
-`REFRESH_TOKEN_EXPIRY` "**************\*\*\***************"
+`REFRESH_TOKEN_EXPIRY` "*******************************"
 
 `EMAIL` "YOUR_EMAIL"
 
@@ -99,13 +94,18 @@ To run this project, you will need to add the following environment variables to
 `CLOUDINARY_API_KEY` "YOUR_CLOUDINARY_API_KEY"
 
 `CLOUDINARY_API_SECRET` "YOUR_CLOUDINARY_API_SECRET"
-
 ## Tech Stack
 
 **Client:** React, Redux, TailwindCSS
 
 **Server:** Node, Express, bcryptjs, cloudinary, compression, cookie-parse, express-rate-limit, jsonwebtoken, mailgen, mongoose, mongoose-aggregate-paginate-v2, nodemailer, socket.io, sslcommerz, stripe
 
+
 ![Logo](https://nodejs.org/static/images/logo.svg)
 
 ![Logo](https://www.vectorlogo.zone/logos/expressjs/expressjs-ar21.svg)
+
+## Authors
+
+- [@muhammadranju](https://www.github.com/muhammadranju)
+
