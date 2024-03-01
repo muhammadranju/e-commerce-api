@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs"); // For password hashing
-
+const jwt = require("jsonwebtoken");
 const {
   ModelRefNames,
   Gender,
@@ -28,6 +28,10 @@ const userSchema = new Schema(
       trim: true,
       lowercase: true,
     },
+    phoneNumber: {
+      type: Number,
+    },
+
     firstName: {
       type: String,
       required: String,
@@ -59,6 +63,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
+      uppercase: true,
       enum: [Gender.MALE, Gender.FEMALE, Gender.OTHER],
     },
     loginType: {
@@ -70,7 +75,7 @@ const userSchema = new Schema(
       ],
     },
     isEmailVerify: {
-      type: String,
+      type: Boolean,
       enum: [VerifyStatus.VERIFY, VerifyStatus.UNVERIFIED],
       default: VerifyStatus.UNVERIFIED,
     },
@@ -124,6 +129,22 @@ userSchema.pre("save", async function (next) {
   }
   next();
 });
+
+userSchema.methods.compareBcryptPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      user_id: this._id,
+      email: this.email,
+      username: this.username,
+      status: true,
+    },
+    process.env.ACCESS_TOKEN_EXPIRY,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+  );
+};
 
 const User = model(ModelRefNames.User, userSchema);
 
