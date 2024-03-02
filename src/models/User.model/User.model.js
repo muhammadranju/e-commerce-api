@@ -1,11 +1,13 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs"); // For password hashing
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const {
   ModelRefNames,
   Gender,
   UserLoginType,
   VerifyStatus,
+  UserStatusEnum,
 } = require("../../constants");
 
 const userSchema = new Schema(
@@ -79,11 +81,27 @@ const userSchema = new Schema(
       enum: [VerifyStatus.VERIFY, VerifyStatus.UNVERIFIED],
       default: VerifyStatus.UNVERIFIED,
     },
-
-    emailVerifyToken: {
+    status: {
+      type: String,
+      enum: [
+        UserStatusEnum.APPROVED,
+        UserStatusEnum.BLOCK,
+        UserStatusEnum.DECLINE,
+        UserStatusEnum.PENDING,
+      ],
+      default: UserStatusEnum.PENDING,
+    },
+    emailVerificationToken: {
       type: String,
     },
-    emailVerifyTokenExpiry: {
+    emailVerificationExpiry: {
+      type: String,
+    },
+
+    forgotPasswordToken: {
+      type: String,
+    },
+    forgotPasswordExpiry: {
       type: String,
     },
     accessToken: {
@@ -122,6 +140,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+// this function do password hashing using bcrypt.
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);
@@ -130,9 +149,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// this methods do compare user password
 userSchema.methods.compareBcryptPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
+// this methods do generate a access token using on jwt
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
@@ -146,6 +168,25 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
-const User = model(ModelRefNames.User, userSchema);
+// this methods do generate temporary token using crypto
+userSchema.methods.generateTemporaryToken = function () {
+  // This token should be client facing
+  // for example: for email verification unHashedToken should go into the user's mail
+  const unHashedToken = crypto.randomBytes(20).toString("hex");
 
+  // This should stay in the DB to compare at the time of verification
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(unHashedToken)
+    .digest("hex");
+
+  const USER_TEMPORARY_TOKEN_EXPIRY = 20 * 60 * 1000; // 20 minutes
+
+  // This is the expiry time for the token (20 minutes)
+  const tokenExpiry = Date.now() + USER_TEMPORARY_TOKEN_EXPIRY;
+
+  return { unHashedToken, hashedToken, tokenExpiry };
+};
+
+const User = model(ModelRefNames.User, userSchema);
 module.exports = User;
