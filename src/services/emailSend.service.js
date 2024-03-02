@@ -42,7 +42,7 @@ async function sendEmail(options) {
   // send mail with defined transport object
   const info = await transporter.sendMail({
     // from: `"Google 👻"${process.env.EMAIL}`, // sender address
-    from: `"Google 👻"<mail.demo@gmail.com>`, // sender address
+    from: `"Google"<mail.noreply@gmail.com>`, // sender address
     to: options.email, // list of receivers
     subject: options.subject, // Subject line
     text: emailTextual, // plain text body
@@ -67,8 +67,8 @@ const emailVerificationMailgenContent = (username, verificationUrl) => {
         instructions:
           "To verify your email please click on the following button:",
         button: {
-          color: "#22BC66", // Optional action button color
-          text: "Verify your email",
+          color: "#22c55e", // Optional action button color
+          text: "Conform your account →",
           link: verificationUrl,
         },
       },
@@ -94,8 +94,8 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
         instructions:
           "To reset your password click on the following button or link:",
         button: {
-          color: "#22BC66", // Optional action button color
-          text: "Reset password",
+          color: "#e11d48", // Optional action button color
+          text: "Reset your password →",
           link: passwordResetUrl,
         },
       },
