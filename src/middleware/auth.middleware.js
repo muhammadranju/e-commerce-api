@@ -15,7 +15,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     // here split bearer token
-    token = token?.split(" ")[1];
+    token = token?.split(" ")[1] ?? token;
 
     // verify jwt token using jwt.verify and get user id
     const userId = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
