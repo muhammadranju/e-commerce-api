@@ -10,7 +10,7 @@ const authMiddleware = async (req, res, next) => {
 
     // check token is valid or invalid
     // if invalid throw error
-    if (token) {
+    if (!token) {
       throw new ApiError(401, "Unauthorized invalid access");
     }
 

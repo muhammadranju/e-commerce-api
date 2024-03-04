@@ -11,7 +11,6 @@ const isLoginMiddleware = (req, res, next) => {
 
     // token verify using jwt.verify method
     const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
     // check user is login or not
     if (user?.status) {
       return res.status(403).json(
