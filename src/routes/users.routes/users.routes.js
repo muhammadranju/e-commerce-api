@@ -1,6 +1,18 @@
 const router = require("express").Router();
 
-router.route("/profile").get();
-router.route("/profile").patch();
+const authMiddleware = require("../../middleware/auth.middleware");
+
+const changePassword = require("../../controller/auth.controller/auth.controller");
+const userController = require("../../controller/users.controller/users.controller");
+
+router
+  .route("/user/profile")
+  .get(authMiddleware, userController.getUserDataGetController);
+router
+  .route("/user/profile")
+  .patch(authMiddleware, userController.updateUserDataPatchController);
+router
+  .route("/user/change-password")
+  .post(authMiddleware, changePassword.changePasswordPostController);
 
 module.exports = router;
