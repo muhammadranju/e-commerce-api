@@ -13,6 +13,6 @@ router
   .patch(authMiddleware, userController.updateUserDataPatchController);
 router
   .route("/user/change-password")
-  .post(authMiddleware, changePassword.changePasswordPostController);
+  .post(authMiddleware, userController.changePasswordPostController);
 
 module.exports = router;
