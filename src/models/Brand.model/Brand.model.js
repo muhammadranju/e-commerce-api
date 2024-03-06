@@ -7,6 +7,9 @@ const BrandSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    brand_url: {
+      type: String,
+    },
     description: {
       type: String,
       default: "",
@@ -40,4 +43,10 @@ const BrandSchema = new mongoose.Schema(
   }
 );
 
+BrandSchema.pre("save", async function (next) {
+  if (this.isModified("name")) {
+    const make_url = this.name?.split(" ")?.join("_")?.toLocaleLowerCase();
+    this.brand_url = make_url;
+  }
+});
 module.exports = mongoose.model(ModelRefNames.Brand, BrandSchema);
