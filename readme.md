@@ -18,6 +18,8 @@
 - User can do reset her passowrd and changer the passowrd.
 - User can search product with title or category or tags.
 - User can do reviews when hir order is delivered.
+- Admin can do add user on dashboard
+- Admin can manage user orrders 
 
 ## Deployment
 
