@@ -16,6 +16,9 @@ const brandRoute = require("./brand.routes/brand.routes");
 const commentsRoute = require("./comment.routes/comment.routes");
 const wishlistRoute = require("./wishlists.routes/wishlists.routes");
 
+// seller routers
+const sellerRoutes = require("./seller.routes/seller.routes");
+
 router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
 );
@@ -34,5 +37,8 @@ router.use(ApiVersion, paymentRoute);
 
 router.use(ApiVersion, commentsRoute);
 router.use(ApiVersion, wishlistRoute);
+
+// seller routes
+router.use(ApiVersion, sellerRoutes);
 
 module.exports = router;
