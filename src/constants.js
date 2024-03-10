@@ -1,13 +1,14 @@
 const ApiVersion = "/api/v1";
 
 /**
- * @type {{ ADMIN:"ADMIN", USER:"USER", EDITOR:"EDITOR", MANAGER:"MANAGER" } as const}
+ * @type {{ ADMIN:"ADMIN", USER:"USER", EDITOR:"EDITOR", MANAGER:"MANAGER" SELLER:"SELLER"} as const}
  */
 const UserRolesEnum = {
   ADMIN: "ADMIN",
   USER: "USER",
   EDITOR: "EDITOR",
   MANAGER: "MANAGER",
+  SELLER: "SELLER",
 };
 
 const AvailableUserRoles = Object.values(UserRolesEnum);
