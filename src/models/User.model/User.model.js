@@ -8,10 +8,24 @@ const {
   UserLoginType,
   VerifyStatus,
   UserStatusEnum,
+  AvailableSocialLogins,
+  AvailableUserRoles,
+  UserRolesEnum,
+  AvailableUserStatus,
 } = require("../../constants");
 
 const userSchema = new Schema(
   {
+    avatar: {
+      type: {
+        url: String,
+        localPath: String,
+      },
+      default: {
+        url: `https://via.placeholder.com/200x200.png`,
+        localPath: "",
+      },
+    },
     email: {
       type: String,
       required: true,
@@ -29,6 +43,18 @@ const userSchema = new Schema(
       unique: true,
       trim: true,
       lowercase: true,
+      index: true,
+    },
+    role: {
+      type: String,
+      enum: AvailableUserRoles,
+      default: UserRolesEnum.USER,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: 8,
     },
     phoneNumber: {
       type: Number,
@@ -58,11 +84,7 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    password: {
-      type: String,
-      required: true,
-      minlength: 8,
-    },
+
     gender: {
       type: String,
       uppercase: true,
@@ -70,11 +92,8 @@ const userSchema = new Schema(
     },
     loginType: {
       type: String,
-      enum: [
-        UserLoginType.EMAIL_PASSWORD,
-        UserLoginType.GITHUB,
-        UserLoginType.GOOGLE,
-      ],
+      enum: AvailableSocialLogins,
+      default: UserLoginType.EMAIL_PASSWORD,
     },
     isEmailVerify: {
       type: Boolean,
@@ -83,41 +102,25 @@ const userSchema = new Schema(
     },
     status: {
       type: String,
-      enum: [
-        UserStatusEnum.APPROVED,
-        UserStatusEnum.BLOCK,
-        UserStatusEnum.DECLINE,
-        UserStatusEnum.PENDING,
-      ],
+      enum: AvailableUserStatus,
       default: UserStatusEnum.PENDING,
     },
     emailVerificationToken: {
       type: String,
     },
     emailVerificationExpiry: {
-      type: String,
+      type: Date,
     },
 
     forgotPasswordToken: {
       type: String,
     },
     forgotPasswordExpiry: {
-      type: String,
+      type: Date,
     },
-    accessToken: {
-      type: String,
-    },
-    accessTokenExpiry: {
-      type: String,
-    },
-
     refreshToken: {
       type: String,
     },
-    refreshTokenExpiry: {
-      type: String,
-    },
-
     addresses: [
       {
         type: Schema.Types.ObjectId,
@@ -165,6 +168,17 @@ userSchema.methods.generateAccessToken = function () {
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+  );
+};
+
+// this methods do generate a refresh token using on jwt
+userSchema.methods.generateRefreshToken = async function () {
+  return jwt.sign(
+    {
+      user_id: this._id,
+    },
+    process.env.SELLER_REFRESH_TOKEN_SECRET,
+    { expiresIn: process.env.SELLER_REFRESH_TOKEN_EXPIRY }
   );
 };
 
