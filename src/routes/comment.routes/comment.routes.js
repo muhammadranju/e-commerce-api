@@ -1,16 +1,17 @@
 const router = require("express").Router();
 const reviews = require("../../controller/comments.controller/comments.controller");
+const authMiddleware = require('../../middleware/auth.middleware')
 router
   .route("/products/:productId/reviews")
-  .get(reviews.getProductReviewsGetController);
+  .get(authMiddleware, reviews.getProductReviewsGetController);
 router
   .route("/products/:productId/reviews")
-  .post(reviews.createProductReviewsPostController);
+  .post(authMiddleware, reviews.createProductReviewsPostController);
 router
   .route("/products/:productId/reviews/:reviewId")
-  .patch(reviews.updateProductReviewsPatchController);
+  .patch(authMiddleware, reviews.updateProductReviewsPatchController);
 router
   .route("/products/:productId/reviews/:reviewId")
-  .delete(reviews.deleteProductReviewsDeleteController);
+  .delete(authMiddleware, reviews.deleteProductReviewsDeleteController);
 
 module.exports = router;
