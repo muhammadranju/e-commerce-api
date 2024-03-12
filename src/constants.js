@@ -3,6 +3,8 @@ const ApiVersion = "/api/v1";
 /**
  * @type {{ ADMIN:"ADMIN", USER:"USER", EDITOR:"EDITOR", MANAGER:"MANAGER" SELLER:"SELLER"} as const}
  */
+
+// User Enums
 const UserRolesEnum = {
   ADMIN: "ADMIN",
   USER: "USER",
@@ -39,6 +41,7 @@ const AvailableCommentStatus = Object.values(UserCommentStatusEnum);
  * @type {{ PENDING: "PENDING"; CANCELLED: "CANCELLED"; DELIVERED: "DELIVERED"; PLACED: "PLACED"; PROCESSING: "PROCESSING"; SHIPPED: "SHIPPED"; } as const}
  */
 
+// Order Enums
 const OrderStatusEnum = {
   PENDING: "PENDING",
   CANCELLED: "CANCELLED",
@@ -78,6 +81,7 @@ const AvailablePaymentMethods = Object.values(PaymentMethods);
 /**
  * @type {{ PENDING:"PENDING", PUBLISHED:"PUBLISHED", DRAFT:"DRAFT" } as const}
  */
+// Post Enums
 const PostStatusEnum = {
   PENDING: "PENDING",
   PUBLISHED: "PUBLISHED",
@@ -98,6 +102,7 @@ const AvailableSocialLogins = Object.values(UserLoginType);
 /**
  * @type {{ User:"User"; Product:"Product"; Comment:"Comment"; Order:"Order"; Seller:"Seller"; Payment:"Payment"; Category:"Category"; Cart:"Cart"; Wishlist:"Wishlist"; Brand:"Brand"; Address:"Address"; OrdersItem:"OrdersItem";} as const}
  */
+// Model References
 const ModelRefNames = {
   User: "User",
   Product: "Product",
@@ -120,14 +125,16 @@ const VerifyStatus = {
   VERIFY: true,
   UNVERIFIED: false,
 };
-const DATABASE_NAME = "e-commerce-api";
-const DATABASE_QUERY = "?retryWrites=true&w=majority";
 
 const Gender = {
   MALE: "MALE",
   FEMALE: "FEMALE",
   OTHER: "OTHER",
 };
+
+// Constants
+const DATABASE_NAME = "e-commerce-api";
+const DATABASE_QUERY = "?retryWrites=true&w=majority";
 
 module.exports = {
   UserRolesEnum,
