@@ -4,6 +4,7 @@ const {
   UserLoginType,
   VerifyStatus,
   UserStatusEnum,
+  ApiVersion,
 } = require("../../constants");
 const ApiError = require("../../utils/ApiError");
 const ApiResponse = require("../../utils/ApiResponse");
@@ -17,13 +18,15 @@ const {
 
 // this function will return email hash token and match from database
 const userEmailVerify = async ({ value }) => {
+  // Find a user with the provided email verification token
   return await User.findOne({
     emailVerificationToken: value,
     emailVerificationExpiry: { $gt: Date.now() },
   });
 };
 // this function will return password hash token and match from database
-const userPasswordVerify = async ({ value }) => {
+const getUserByResetToken = async ({ value }) => {
+  // Find a user with the provided reset token
   return await User.findOne({
     forgotPasswordToken: value,
     forgotPasswordExpiry: { $gt: Date.now() },
@@ -33,79 +36,70 @@ const userPasswordVerify = async ({ value }) => {
 // signup post controller
 const signupPostController = asyncHandler(async (req, res, next) => {
   // Get user data from req.body frontend side
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    phoneNumber,
-    loginType,
-    gender,
-  } = req.body;
+  const { firstName, lastName, email, password, phoneNumber, gender } =
+    req.body;
 
-  // check user data is valid or not
-  if ((!firstName, !lastName, !email, !password, !loginType, !gender)) {
-    throw new ApiError(400, "All fields are required!");
+  // Validate required fields
+  if ((!email, !password, !gender)) {
+    throw new ApiError(400, "Email, password, and gender are required!");
   }
 
-  // check user password is equal to condition min 8
+  // Validate password length
   if (password.length <= 8) {
     throw new ApiError(400, "Password must be at least 8 characters long.");
   }
 
-  // check first name and last name is valid or invalid
+  // Validate first name and last name
   if ((!firstName, !lastName)) {
     throw new ApiError(400, "First Name and Last Name is required.");
   }
 
-  // make user using her first name and last name
-  const username =
-    firstName?.toLowerCase() +
-    lastName?.toLowerCase() +
-    Math.floor(Math.random() * 1001 + 3);
+  // Generate a more unique username using a combination of user details
+  const username = `${firstName?.toLowerCase()}${lastName?.toLowerCase()}${Math.floor(
+    Math.random() * 1001 + 3
+  )}`;
 
-  // if all ok then check database user is already exits or not
-  const findUserByEmail = await User.findOne({ email });
-
-  // check username is exits or not
-  if (findUserByEmail) {
-    throw new ApiError(400, "This email already token!");
+  // Check if a user with the same email already exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new ApiError(400, "This email already exists!");
   }
-  // if user not exits then check user email is valid or not
+  // Create a user object
   const user = new User({
     username,
     firstName,
     lastName,
     email,
     password,
-    phoneNumber: phoneNumber?.split("-")?.join(""),
+    phoneNumber: phoneNumber.replace(/-/g, ""), // Remove dashes from phone number
     loginType: UserLoginType.EMAIL_PASSWORD,
     gender,
   });
 
-  // generate temporary token
+  // Generate a temporary token for email verification
   const { unHashedToken, hashedToken, tokenExpiry } =
     user.generateTemporaryToken();
 
-  // set temporary token in to database
+  // Set the temporary token in the user object
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
 
-  // if all ok then do signup the user
-  if (user) {
-    await user.save(); // save to to database
-    sendEmail({
-      email: user?.email,
-      subject: "Please verify your email",
-      mailgenContent: emailVerificationMailgenContent(
-        `${user?.firstName} ${user?.lastName}`,
-        `${req.protocol}://${req.get(
-          "host"
-        )}/api/v1/auth/verify-email/${unHashedToken}`
-      ),
-    });
-  }
+  // Save the user to the database
+  await user.save();
 
+  // Send an email for email verification
+  sendEmail({
+    email: user?.email,
+    subject: "Please verify your email",
+    mailgenContent: emailVerificationMailgenContent(
+      `${user?.firstName} ${user?.lastName}`,
+      `${req.protocol}://${req.get(
+        "host"
+      )}/${ApiVersion}/auth/verify-email/${unHashedToken}`
+    ),
+  });
+
+  // Respond with a success message
   return res
     .status(201)
     .json(new ApiResponse(201, user, "User account created successfully!"));
@@ -116,23 +110,22 @@ const loginPostController = asyncHandler(async (req, res, next) => {
   // Get User data from req.body frontend.
   const { username, email, password, phoneNumber } = req.body;
 
-  // check user data is valid or not.
-  if ((!username, !email, !password)) {
+  // Validate required fields
+  if (!username && !email && !password) {
     throw new ApiError(400, "All fields are required!");
   }
 
-  // check database user email/username & password is valid or not.
-  // user can login many thing email, username, phoneNumber
+  // Check database for user based on email, username, or phoneNumber
   const user = await User.findOne({
     $or: [{ email }, { username }, { phoneNumber }],
   });
 
-  // check user email/username is exits or not.
+  // Check if user exists
   if (!user) {
     throw new ApiError(400, "Invalid credential, email or password.");
   }
 
-  // check user email verify or not.
+  // Check if user's email is verified
   if (user.isEmailVerify === VerifyStatus.UNVERIFIED) {
     throw new ApiError(
       401,
@@ -140,25 +133,24 @@ const loginPostController = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // check user password using jwt compare
+  // Check if the password matches using bcrypt
   const passwordIsMatch = await user.compareBcryptPassword(password);
   if (!passwordIsMatch) {
     throw new ApiError(400, "Invalid credential, email or password.");
   }
 
-  // generate user access_token.
+  // Generate user access token
   const token = user.generateAccessToken();
 
-  // set user access_token to cookies.
+  // Set user access token in cookies with secure and httpOnly options
   res.cookie("access_token", token, {
     maxAge: 60 * 60 * 24 * 1 * 1000, //30 days
-    secure: false,
-    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
   });
 
-  // if all ok then do login the user.
-  user.accessToken = token; // save token in to database
-  await user.save({ validateBeforeSave: false });
+  // Respond with success message
+
   res
     .status(200)
     .json(
@@ -171,32 +163,38 @@ const forgotPasswordPostController = asyncHandler(async (req, res, next) => {
   // Get User Email from frontend side.
   const { email } = req.body;
 
-  // check user email form database is exits or not.
+  // Check if user with the provided email exists
   const user = await User.findOne({ email });
 
-  // if no user found return "User not found this id."
+  // If no user found, return an error
   if (!user) {
     throw new ApiError(400, `User not found: ${email}`);
   }
+
+  // Generate temporary token for password reset
   const { unHashedToken, hashedToken, tokenExpiry } =
     user.generateTemporaryToken();
 
+  // Set the generated token and expiry in the user object
   user.forgotPasswordToken = hashedToken;
   user.forgotPasswordExpiry = tokenExpiry;
-  // if user is valid then send user email reset link.
-  if (user) {
-    await user.save({ validateBeforeSave: false });
-    sendEmail({
-      email: user?.email,
-      subject: "Password reset request",
-      mailgenContent: forgotPasswordMailgenContent(
-        `${user?.firstName} ${user?.lastName}`,
-        `${req.protocol}://${req.get(
-          "host"
-        )}/api/v1/auth/reset-password/${unHashedToken}`
-      ),
-    });
-  }
+
+  // Save the user with the generated token and expiry (validateBeforeSave is set to false)
+  await user.save({ validateBeforeSave: false });
+
+  // Send email with the password reset link
+  sendEmail({
+    email: user?.email,
+    subject: "Password reset request",
+    mailgenContent: forgotPasswordMailgenContent(
+      `${user?.firstName} ${user?.lastName}`,
+      `${req.protocol}://${req.get(
+        "host"
+      )}/api/v1/auth/reset-password/${unHashedToken}`
+    ),
+  });
+
+  // Respond with success message
   return res
     .status(200)
     .json(
@@ -215,34 +213,40 @@ const resetPasswordPostController = asyncHandler(async (req, res, next) => {
     // if user email reset link is expired return "Your email reset link is expired."
     // get password from frontend or req.body (newPassword, newPasswordTow)
 
-    // get new password from frontend or req.body
+    // Get new password from the request body
     const { newPassword } = req.body;
 
-    // get reset token from params
+    // Get reset token from params
     const { resetToken } = req.params;
-    // check new password is empty or invalid
+
+    // Check if the new password is empty or invalid
     if (!newPassword) {
       throw new ApiError(400, "Please enter a password.");
     }
-    // create hashed token from crypto
+
+    // Create hashed token from the reset token
     let hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
 
-    // get user from userEmail Verify function
-    const user = await userPasswordVerify({ value: hashedToken });
+    // Get user using the reset token
+    const user = await getUserByResetToken({ value: hashedToken });
 
-    // check user token is invalid or expired
+    // Check if the reset token is invalid or expired
     if (!user) {
       throw new ApiError(409, "Token is invalid or expired");
     }
-    // set a new password in database with new hash password
+
+    // Set a new password in the database with a new hashed password
     user.password = newPassword;
     user.forgotPasswordToken = undefined;
     user.forgotPasswordExpiry = undefined;
-    await user.save(); // save to database
 
+    // Save the user to the database
+    await user.save();
+
+    // Respond with success message
     return res
       .status(200)
       .json(new ApiResponse(200, {}, "Password was change successfully."));
@@ -255,33 +259,37 @@ const changePasswordPostController = asyncHandler(async (req, res, next) => {
   // check user email reset link is expired or not
   // if user email reset link is expired return "Your email reset link is expired."
   // get password from frontend or req.body (newPassword, newPasswordTow)
-  // get all password in from frontend or req.body
+
+  // Get passwords from the request body
   const { password, newPassword, conformPassword } = req.body;
 
+  // Check if required fields are provided
   if ((!password, !newPassword, !conformPassword)) {
     throw new ApiError(
       400,
       "You must be provide New password and Conform password"
     );
   }
-  // check newPassword and conformPassword is match or not
+
+  // Check if newPassword and conformPassword match
   if (newPassword !== conformPassword) {
     throw new ApiError(400, "Password or Conform Password don't match.");
   }
 
-  console.log("change password", req.user);
-  // find user on database by userId
+  // Find user in the database by userId
   const user = await User.findById({ _id: req.user.userId });
 
-  // check user password and database password is match or not
-  const isMatch = await user.compareBcryptPassword(password);
-  if (!isMatch) {
+  // Check if the user is found
+  const isMatchPassword = await user.compareBcryptPassword(password);
+  if (!isMatchPassword) {
     throw new ApiError(400, "Password don't match.");
   }
 
-  // save to old password to new password
+  // Update the user's password in the database
   user.password = newPassword;
   await user.save(); // save to database
+
+  // Respond with success message
 
   return res
     .status(200)
@@ -296,36 +304,38 @@ const changePasswordPostController = asyncHandler(async (req, res, next) => {
 
 // email verification controller
 const emailVerificationController = asyncHandler(async (req, res, next) => {
-  // get verification token from params
+  // Get verification token from params
   const { verificationToken } = req.params;
 
-  // check verification token is valid or invalid if invalid throw error
+  // Check if verification token is missing
   if (!verificationToken) {
     throw new ApiError(400, "Email verification token is missing");
   }
 
-  // create hashed token from crypto
+  // Create hashed token from the verification token
   let hashedToken = crypto
     .createHash("sha256")
     .update(verificationToken)
     .digest("hex");
 
-  // get user from userEmail Verify function
+  // Get user using the verification token
   const user = await userEmailVerify({ value: hashedToken });
 
-  // check user is valid or invalid if user is invalid throw error
+  // Check if the user is valid
   if (!user) {
     throw new ApiResponse(409, {}, "Token is invalid or expired");
   }
-  // If we found the user that means the token is valid
+  // Update the user's email verification status and approval status
   // Now we can remove the associated email token and expiry date as we no  longer need them
   user.emailVerificationToken = undefined;
   user.emailVerificationExpiry = undefined;
-
-  // Tun the email verified flag to `true`
   user.isEmailVerify = VerifyStatus.VERIFY;
   user.status = UserStatusEnum.APPROVED;
+
+  // Save the user to the database (validateBeforeSave is set to false)
   await user.save({ validateBeforeSave: false });
+
+  // Respond with success message
 
   return res
     .status(200)
@@ -337,12 +347,10 @@ const emailVerificationController = asyncHandler(async (req, res, next) => {
 // logout post controller
 const logoutPostController = asyncHandler(async (req, res, next) => {
   try {
-    // clear user cookies from browser
-    // if no user found return "User not found this id."
-    // then user redirect to login
+    // Clear user cookies from the browser
     res.clearCookie("access_token");
-    console.log(req.user);
 
+    // Respond with a success message for logout
     return res
       .status(200)
       .json(
