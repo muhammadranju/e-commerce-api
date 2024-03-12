@@ -6,16 +6,21 @@ const DatabaseConnection = require("./config/DatabaseConnection");
 const PORT = process.env.PORT || 3030;
 const server = http.createServer(app);
 
-const start = async () => {
+const startServer = async () => {
   try {
+    // Connect to the database
     await DatabaseConnection();
+
+    // Start the HTTP server
     server.listen(PORT, () => {
       console.log(`Server is running at http://localhost:${PORT}`);
     });
-  } catch (e) {
-    console.log("Database Error");
-    console.log(e);
+  } catch (error) {
+    // Log a more detailed error message
+    console.error("Error starting the server:");
+    console.error(error.message);
+    console.error(error);
   }
 };
 
-start();
+startServer();

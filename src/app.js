@@ -1,14 +1,20 @@
 const express = require("express");
 const app = express();
 
-const globalPage = require("./controller/common.controller/common.controller");
+// Import global controller functions
+const globalController = require("./controller/common.controller/common.controller");
 
+// Import middleware and routes
 const middleware = require("./app/middleware");
 const routes = require("./routes");
 
-app.use(middleware); // middleware
-app.use(routes); // routes
+// Apply middleware
+app.use(middleware);
 
-app.use([globalPage.notFoundHandler, globalPage.errorHandler]);
+// Apply routes
+app.use(routes);
+
+// Apply global controller functions for handling not found and error cases
+app.use([globalController.notFoundHandler, globalController.errorHandler]);
 
 module.exports = app;
