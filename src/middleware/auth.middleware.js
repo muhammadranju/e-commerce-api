@@ -2,37 +2,41 @@ const User = require("../models/User.model/User.model");
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
 
-// Authorization middleware function
+// Middleware function for user authentication
 const authMiddleware = async (req, res, next) => {
   try {
-    // get token from headers or cookies
-    let token = req.headers?.authorization || req.cookies?.access_token;
+    // Extract token from headers or cookies
+    let token =
+      req.headers?.authorization.split(" ")[1] || req.cookies?.access_token;
 
-    // check token is valid or invalid
-    // if invalid throw error
+    // Check if token is provided
     if (!token) {
+      // If token is not provided, throw an unauthorized error
       throw new ApiError(401, "Unauthorized invalid access");
     }
 
     // here split bearer token
-    token = token?.split(" ")[1] ?? token;
+    // token = token?.split(" ")[1] ?? token;
 
-    // verify jwt token using jwt.verify and get user id
-    const userId = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    // Verify JWT token and extract user ID
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     // check user is valid or invalid
+    const userId = decodedToken.user_id;
     if (!userId) {
       throw new ApiError(401, "Unauthorized invalid access");
     }
 
-    // find user by given userId
+    // Find user by user ID
     const user = await User.findById({ _id: userId.user_id });
-    // check user is valid or invalid
+
+    // Check if user exists
     if (!user) {
+      // If user is not found, throw an unauthorized error
       throw new ApiError(401, "Unauthorized invalid access");
     }
 
-    // set payload for req.user
-    const payload = {
+    // Set user payload to req.user for use in subsequent middleware
+    req.user = {
       userId: user._id,
       username: user.username,
       phoneNumber: user.phoneNumber,
@@ -42,12 +46,10 @@ const authMiddleware = async (req, res, next) => {
       status: user.status,
     };
 
-    // set user payload to req.user
-    req.user = payload;
-
-    // return next() function for next controller
-    return next();
+    // Proceed to the next middleware
+    next();
   } catch (error) {
+    // Pass any caught errors to the error handling middleware
     next(error);
     // throw new ApiError(401, "Unauthorized invalid access", [error]);
   }
