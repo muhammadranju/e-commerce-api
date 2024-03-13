@@ -16,7 +16,7 @@ const commentSchema = new Schema(
       required: true,
     },
     // Product or entity the comment is attached to
-    product: {
+    products: {
       type: Schema.Types.ObjectId,
       ref: ModelRefNames.Product, // Reference to the Product model
       required: true,

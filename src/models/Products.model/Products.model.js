@@ -35,17 +35,12 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-    coverImage: [
+    coverImages: [
       {
         type: String,
         required: true,
       },
     ],
-    brand: {
-      type: Schema.Types.ObjectId,
-      ref: ModelRefNames.Brand,
-      required: true,
-    },
     stockQuantity: {
       type: Number,
       required: true,
@@ -61,6 +56,12 @@ const productSchema = new Schema(
         required: true,
       },
     ],
+
+    brand: {
+      type: Schema.Types.ObjectId,
+      ref: ModelRefNames.Brand,
+      required: true,
+    },
     comments: {
       type: Schema.Types.ObjectId,
       ref: ModelRefNames.Comments,
