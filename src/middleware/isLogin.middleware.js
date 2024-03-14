@@ -6,7 +6,7 @@ const isLoginMiddleware = (req, res, next) => {
   try {
     // Get token from headers or cookies
     let token =
-      req.headers?.authorization.split(" ")[1] || req.cookies?.access_token;
+      req.headers?.authorization?.split(" ")[1] || req.cookies?.access_token;
 
     // Verify the token using jwt.verify method
     const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);

@@ -23,22 +23,20 @@ router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
 );
 
-router.use(ApiVersion, userRoutes);
-router.use(ApiVersion, authRoutes);
+router.use([
+  userRoutes,
+  authRoutes,
+  productRoutes,
+  cartsRoutes,
+  ordersRoutes,
+  paymentRoutes,
+  categoriesRoutes,
+  brandRoutes,
+  commentsRoutes,
+  wishlistRoutes,
 
-router.use(ApiVersion, productRoutes);
-router.use(ApiVersion, cartsRoutes);
-
-router.use(ApiVersion, categoriesRoutes);
-router.use(ApiVersion, brandRoutes);
-
-router.use(ApiVersion, ordersRoutes);
-router.use(ApiVersion, paymentRoutes);
-
-router.use(ApiVersion, commentsRoutes);
-router.use(ApiVersion, wishlistRoutes);
-
-// seller routes
-router.use(ApiVersion, sellerRoutes);
+  // seller routes
+  sellerRoutes,
+]);
 
 module.exports = router;

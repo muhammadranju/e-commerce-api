@@ -24,6 +24,7 @@ const BrandSchema = new mongoose.Schema(
     },
     socialMedia: {
       type: {
+        _id: false,
         facebook: { type: String, default: "" },
         twitter: { type: String, default: "" },
         instagram: { type: String, default: "" },

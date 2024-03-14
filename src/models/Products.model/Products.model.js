@@ -64,8 +64,7 @@ const productSchema = new Schema(
     },
     comments: {
       type: Schema.Types.ObjectId,
-      ref: ModelRefNames.Comments,
-      required: true,
+      ref: ModelRefNames.Comment,
     },
   },
   { timestamps: true }

@@ -17,6 +17,7 @@ const {
 const userSchema = new Schema(
   {
     avatar: {
+      _id: false,
       type: {
         url: String,
         localPath: String,

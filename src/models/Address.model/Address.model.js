@@ -24,7 +24,7 @@ const addressSchema = new mongoose.Schema({
     required: true,
   },
   postalCode: {
-    type: String,
+    type: Number,
     required: true,
   },
   country: {
@@ -33,7 +33,7 @@ const addressSchema = new mongoose.Schema({
   },
   // Additional optional fields
   phoneNumber: {
-    type: String,
+    type: Number,
   },
   companyName: {
     type: String,
