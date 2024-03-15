@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const reviews = require("../../controller/comments.controller/comments.controller");
-const authMiddleware = require('../../middleware/auth.middleware')
+const { authMiddleware } = require("../../middleware/auth.middleware");
 router
   .route("/products/:productId/reviews")
   .get(authMiddleware, reviews.getProductReviewsGetController);

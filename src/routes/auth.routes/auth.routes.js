@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const auth = require("../../controller/auth.controller/auth.controller");
 
-const authMiddleware = require("../../middleware/auth.middleware");
+const { authMiddleware } = require("../../middleware/auth.middleware");
 const isLoginMiddleware = require("../../middleware/isLogin.middleware");
 
 // this route is reset password route patch using method

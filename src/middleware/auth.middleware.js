@@ -1,4 +1,5 @@
 const User = require("../models/User.model/User.model");
+const Seller = require("../models/Seller.model/Seller.model");
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
 
@@ -55,4 +56,51 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+const sellerAuthMiddleware = async (req, res, next) => {
+  try {
+    // Extract token from headers or cookies
+    let token =
+      req.headers?.authorization?.split(" ")[1] || req.cookies?.access_token;
+
+    // Check if token is provided
+    if (!token) {
+      // If token is not provided, throw an unauthorized error
+      throw new ApiError(401, "Unauthorized invalid access");
+    }
+
+    // here split bearer token
+    // token = token?.split(" ")[1] ?? token;
+
+    // Verify JWT token and extract seller ID
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    // check seller is valid or invalid
+    if (!decodedToken) {
+      throw new ApiError(401, "Unauthorized invalid access");
+    }
+
+    // Find seller by seller ID
+    const seller = await Seller.findOne({ _id: decodedToken.seller_id });
+
+    // Check if seller exists
+    if (!seller) {
+      // If seller is not found, throw an unauthorized error
+      throw new ApiError(401, "Unauthorized invalid access");
+    }
+
+    // Set seller payload to req.seller for use in subsequent middleware
+    req.seller = {
+      sellerId: seller.id,
+      contactNumber: seller.contactNumber,
+      name: seller.name,
+      isEmailVerify: seller.isEmailVerify,
+      status: seller.status,
+    };
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { authMiddleware, sellerAuthMiddleware };
