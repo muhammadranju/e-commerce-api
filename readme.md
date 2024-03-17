@@ -111,7 +111,7 @@ To run this project, you will need to add the following environment variables to
 
 ## Tech Stack
 
-**Client:** React, Redux, TailwindCSS
+**Client:** React.js, Next.js, TailwindCSS
 
 **Server:** Node, Express, bcryptjs, cloudinary, compression, cookie-parse, express-rate-limit, jsonwebtoken, mailgen, mongoose, mongoose-aggregate-paginate-v2, nodemailer, socket.io, sslcommerz, stripe
 
