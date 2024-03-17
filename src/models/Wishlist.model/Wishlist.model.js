@@ -45,5 +45,5 @@ wishlistSchema.methods.removeProduct = async function (productId) {
     // Handle product not found case (optional)
   }
 };
-
-module.exports = mongoose.model(ModelRefNames.Wishlist, wishlistSchema);
+const Wishlist = mongoose.model(ModelRefNames.Wishlist, wishlistSchema);
+module.exports = Wishlist;

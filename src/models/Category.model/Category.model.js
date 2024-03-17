@@ -41,4 +41,5 @@ categorySchema.pre("save", async function (next) {
   }
 });
 
-module.exports = mongoose.model(ModelRefNames.Category, categorySchema);
+const Category = mongoose.model(ModelRefNames.Category, categorySchema);
+module.exports = Category;

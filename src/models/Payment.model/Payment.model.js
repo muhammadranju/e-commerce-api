@@ -74,4 +74,5 @@ const paymentSchema = new Schema(
   }
 );
 
-module.exports = model(ModelRefNames.Payment, paymentSchema);
+const Payment = model(ModelRefNames.Payment, paymentSchema);
+module.exports = Payment;

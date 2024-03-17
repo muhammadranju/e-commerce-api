@@ -93,4 +93,5 @@ const orderSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model(ModelRefNames.Order, orderSchema);
+const Order = model(ModelRefNames.Order, orderSchema);
+module.exports = Order;

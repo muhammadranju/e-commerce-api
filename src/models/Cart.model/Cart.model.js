@@ -64,4 +64,5 @@ cartSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = mongoose.model(ModelRefNames.Cart, cartSchema);
+const Cart = mongoose.model(ModelRefNames.Cart, cartSchema);
+module.exports = Cart;

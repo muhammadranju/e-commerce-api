@@ -146,4 +146,5 @@ sellerSchema.methods.generateRefreshToken = async function () {
   );
 };
 
-module.exports = mongoose.model(ModelRefNames.Seller, sellerSchema);
+const Seller = mongoose.model(ModelRefNames.Seller, sellerSchema);
+module.exports = Seller;

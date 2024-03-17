@@ -40,5 +40,5 @@ commentSchema.pre("save", (next) => {
   }
   next();
 });
-
-module.exports = model(ModelRefNames.Comment, commentSchema);
+const Comment = model(ModelRefNames.Comment, commentSchema);
+module.exports = Comment;

@@ -50,4 +50,6 @@ BrandSchema.pre("save", async function (next) {
     this.brand_url = make_url;
   }
 });
-module.exports = mongoose.model(ModelRefNames.Brand, BrandSchema);
+
+const Brand = mongoose.model(ModelRefNames.Brand, BrandSchema);
+module.exports = Brand;
