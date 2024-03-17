@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const { ApiVersion } = require("../constants");
 
+const addressRoutes = require("./address.routes/address.routes");
+
 const userRoutes = require("./users.routes/users.routes");
 const authRoutes = require("./auth.routes/auth.routes");
 
@@ -16,27 +18,24 @@ const brandRoutes = require("./brand.routes/brand.routes");
 const commentsRoutes = require("./comment.routes/comment.routes");
 const wishlistRoutes = require("./wishlists.routes/wishlists.routes");
 
-// seller routers
+// import seller routers
 const sellerRoutes = require("./seller.routes/seller.routes");
 
+// this routes is checking api health
 router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
 );
 
-router.use([
-  userRoutes,
-  authRoutes,
-  productRoutes,
-  cartsRoutes,
-  ordersRoutes,
-  paymentRoutes,
-  categoriesRoutes,
-  brandRoutes,
-  commentsRoutes,
-  wishlistRoutes,
-
-  // seller routes
-  sellerRoutes,
-]);
+router.use("/user", [userRoutes, addressRoutes]);
+router.use("/auth", authRoutes);
+router.use("/cart", cartsRoutes);
+router.use("/checkout", ordersRoutes);
+router.use("/payment", paymentRoutes);
+router.use("/categories", categoriesRoutes);
+router.use("/brands", brandRoutes);
+router.use("/wishlist", wishlistRoutes);
+router.use("/products", [productRoutes, commentsRoutes]);
+// defined a seller routers
+router.use("/seller", sellerRoutes);
 
 module.exports = router;
