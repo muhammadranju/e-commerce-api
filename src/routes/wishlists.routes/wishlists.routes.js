@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
-router.route("/wishlist").get();
-router.route("/wishlist/add").post();
-router.route("/wishlist/remove").delete();
+router.route("/").get();
+router.route("/add").post();
+router.route("/remove").delete();
 
 module.exports = router;

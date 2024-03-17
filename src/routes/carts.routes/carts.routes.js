@@ -1,9 +1,9 @@
 const router = require("express").Router();
 
-router.route("/cart").get();
-router.route("/cart/add").post();
-router.route("/cart/update").patch();
-router.route("/cart/remove").delete();
-router.route("/cart/clear").delete();
+router.route("/").get();
+router.route("/add").post();
+router.route("/update").patch();
+router.route("/remove").delete();
+router.route("/clear").delete();
 
 module.exports = router;

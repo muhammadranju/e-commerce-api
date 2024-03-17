@@ -6,13 +6,13 @@ const changePassword = require("../../controller/auth.controller/auth.controller
 const userController = require("../../controller/users.controller/users.controller");
 
 router
-  .route("/user/profile")
+  .route("/profile")
   .get(authMiddleware, userController.getUserDataGetController);
 router
-  .route("/user/profile")
+  .route("/profile")
   .patch(authMiddleware, userController.updateUserDataPatchController);
 router
-  .route("/user/change-password")
+  .route("/change-password")
   .post(authMiddleware, userController.changePasswordPostController);
 
 module.exports = router;
