@@ -1,3 +1,4 @@
+const slugify = require("slugify");
 const User = require("../../models/User.model/User.model");
 const asyncHandler = require("../../utils/asyncHandler");
 const {
@@ -55,7 +56,8 @@ const signupPostController = asyncHandler(async (req, res, next) => {
   }
 
   // Generate a more unique username using a combination of user details
-  const username = `${firstName?.toLowerCase()}${lastName?.toLowerCase()}${Math.floor(
+  const generateURL = `${firstName} ${lastName}`;
+  const username = `${slugify(generateURL, { lower: true })}${Math.floor(
     Math.random() * 1001 + 3
   )}`;
 
