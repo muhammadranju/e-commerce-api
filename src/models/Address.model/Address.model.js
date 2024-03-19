@@ -45,7 +45,11 @@ const addressSchema = new mongoose.Schema(
     companyName: {
       type: String,
     },
-    isDefault: {
+    isDefaultDelivery: {
+      type: Boolean,
+      default: isDefault.UNVERIFIED,
+    },
+    isDefaultBulling: {
       type: Boolean,
       default: isDefault.UNVERIFIED,
     },
