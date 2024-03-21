@@ -26,7 +26,7 @@ const sellerSchema = new mongoose.Schema(
         localPath: String,
       },
       default: {
-        url: `https://via.placeholder.com/200x200.png`,
+        url: `https://via.placeholder.com/1920x1080.png`,
         localPath: "",
       },
     },
@@ -64,20 +64,20 @@ const sellerSchema = new mongoose.Schema(
     },
     shopAddress: {
       type: Object,
+      _id: false,
       required: true,
-      properties: {
-        street: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        country: { type: String, required: true },
-        postalCode: { type: String, required: true },
-      },
+      addressLine: { type: String, required: true },
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      state: { type: String, required: true },
+      country: { type: String, required: true },
+      postalCode: { type: Number, required: true },
     },
-    contactNumber: {
+    phoneNumber: {
       type: Number,
       required: true,
     },
-    isEmailVerify: {
+    isEmailVerified: {
       type: Boolean,
       enum: [VerifyStatus.VERIFY, VerifyStatus.UNVERIFIED],
       default: VerifyStatus.UNVERIFIED,
