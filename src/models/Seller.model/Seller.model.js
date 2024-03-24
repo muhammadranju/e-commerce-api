@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const {
   ModelRefNames,
   UserStatusEnum,
@@ -6,11 +7,13 @@ const {
   AvailableUserStatus,
   AvailableUserRoles,
   UserRolesEnum,
+  Gender,
 } = require("../../constants");
 const bcrypt = require("bcryptjs");
 const sellerSchema = new mongoose.Schema(
   {
     logo: {
+      _id: false,
       type: {
         url: String,
         localPath: String,
@@ -21,6 +24,7 @@ const sellerSchema = new mongoose.Schema(
       },
     },
     banner: {
+      _id: false,
       type: {
         url: String,
         localPath: String,
@@ -41,6 +45,10 @@ const sellerSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate: {
+        validator: (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+        message: "Invalid email format",
+      },
     },
 
     role: {
@@ -58,6 +66,7 @@ const sellerSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    shopUrlLink: { type: String },
     shopDescription: {
       type: String,
       trim: true,
@@ -70,13 +79,36 @@ const sellerSchema = new mongoose.Schema(
       street: { type: String, required: true },
       city: { type: String, required: true },
       state: { type: String, required: true },
-      country: { type: String, required: true },
+      Country: { type: String, required: true },
       postalCode: { type: Number, required: true },
     },
     phoneNumber: {
       type: Number,
       required: true,
     },
+    preferredCurrency: {
+      type: String,
+      default: "BDT", // Replace with your default currency
+    },
+    preferredLanguage: {
+      type: String,
+      default: "en-US", // Replace with your default language
+    },
+    newsletterSubscription: {
+      type: Boolean,
+      default: false,
+    },
+    marketingOptIn: {
+      type: Boolean,
+      default: false,
+    },
+
+    gender: {
+      type: String,
+      uppercase: true,
+      enum: [Gender.MALE, Gender.FEMALE, Gender.OTHER],
+    },
+
     isEmailVerified: {
       type: Boolean,
       enum: [VerifyStatus.VERIFY, VerifyStatus.UNVERIFIED],
