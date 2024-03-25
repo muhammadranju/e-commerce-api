@@ -2,25 +2,25 @@ const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
 
 // Middleware to check if the user is logged in
-const isLoginMiddleware = (req, res, next) => {
+const isSellerLoginMiddleware = (req, res, next) => {
   try {
     // Get token from headers or cookies
     let token =
-      req.headers?.authorization?.split(" ")[1] || req.cookies?.access_token;
+      req.headers?.authorization?.split(" ")[1] || req.cookies?.seller_token;
 
     // Verify the token using jwt.verify method
-    const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const seller = jwt.verify(token, process.env.SELLER_ACCESS_TOKEN_SECRET);
+    // Check if the seller is logged in based on status property
 
-    // Check if the user is logged in based on status property
-    if (user?.status) {
-      // If user is logged in, return a 403 Forbidden response
+    if (seller?.status) {
+      // If seller is logged in, return a 403 Forbidden response
       throw new ApiError(
         403,
         "You don't visit login/register page Return home"
       );
     }
 
-    // Proceed to the next middleware if user is not logged in
+    // Proceed to the next middleware if seller is not logged in
     return next();
   } catch (error) {
     // Handle various error cases
@@ -33,7 +33,6 @@ const isLoginMiddleware = (req, res, next) => {
 
     if (error.message.includes("invalid token")) {
       // If token is invalid or malformed, return a 403 Forbidden response
-
       throw new ApiError(
         403,
         "you don't have access to change it.",
@@ -78,4 +77,4 @@ const isLoginMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = isLoginMiddleware;
+module.exports = isSellerLoginMiddleware;

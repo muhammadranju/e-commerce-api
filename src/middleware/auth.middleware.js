@@ -60,7 +60,7 @@ const sellerAuthMiddleware = async (req, res, next) => {
   try {
     // Extract token from headers or cookies
     let token =
-      req.headers?.authorization?.split(" ")[1] || req.cookies?.access_token;
+      req.headers?.authorization?.split(" ")[1] || req.cookies?.seller_token;
 
     // Check if token is provided
     if (!token) {
@@ -72,7 +72,10 @@ const sellerAuthMiddleware = async (req, res, next) => {
     // token = token?.split(" ")[1] ?? token;
 
     // Verify JWT token and extract seller ID
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decodedToken = jwt.verify(
+      token,
+      process.env.SELLER_ACCESS_TOKEN_SECRET
+    );
 
     // check seller is valid or invalid
     if (!decodedToken) {
