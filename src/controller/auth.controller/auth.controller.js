@@ -331,7 +331,7 @@ const emailVerificationController = asyncHandler(async (req, res, next) => {
   // Now we can remove the associated email token and expiry date as we no  longer need them
   user.emailVerificationToken = undefined;
   user.emailVerificationExpiry = undefined;
-  user.isEmailVerify = VerifyStatus.VERIFY;
+  user.isEmailVerified = VerifyStatus.VERIFY;
   user.status = UserStatusEnum.APPROVED;
 
   // Save the user to the database (validateBeforeSave is set to false)

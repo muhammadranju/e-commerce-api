@@ -96,7 +96,7 @@ const userSchema = new Schema(
       enum: AvailableSocialLogins,
       default: UserLoginType.EMAIL_PASSWORD,
     },
-    isEmailVerify: {
+    isEmailVerified: {
       type: Boolean,
       enum: [VerifyStatus.VERIFY, VerifyStatus.UNVERIFIED],
       default: VerifyStatus.UNVERIFIED,
