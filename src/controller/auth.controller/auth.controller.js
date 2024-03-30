@@ -20,10 +20,15 @@ const {
 // this function will return email hash token and match from database
 const userEmailVerify = async ({ value }) => {
   // Find a user with the provided email verification token
-  return await User.findOne({
+  const user = await User.findOne({
     emailVerificationToken: value,
     emailVerificationExpiry: { $gt: Date.now() },
   });
+
+  // Use a more secure method to find the user, such as User.findByIdAndValidate
+  const validatedUser = await User.findByIdAndValidate(user._id);
+
+  return validatedUser;
 };
 // this function will return password hash token and match from database
 const getUserByResetToken = async ({ value }) => {
@@ -35,7 +40,7 @@ const getUserByResetToken = async ({ value }) => {
 };
 
 // signup post controller
-const signupPostController = asyncHandler(async (req, res, next) => {
+const signupController = asyncHandler(async (req, res, next) => {
   // Get user data from req.body frontend side
   const { firstName, lastName, email, password, phoneNumber, gender } =
     req.body;
@@ -108,7 +113,7 @@ const signupPostController = asyncHandler(async (req, res, next) => {
 });
 
 // login Controller
-const loginPostController = asyncHandler(async (req, res, next) => {
+const loginController = asyncHandler(async (req, res, next) => {
   // Get User data from req.body frontend.
   const { username, email, password, phoneNumber } = req.body;
 
@@ -161,7 +166,7 @@ const loginPostController = asyncHandler(async (req, res, next) => {
 });
 
 // forgot password controller
-const forgotPasswordPostController = asyncHandler(async (req, res, next) => {
+const forgotPasswordController = asyncHandler(async (req, res, next) => {
   // Get User Email from frontend side.
   const { email } = req.body;
 
@@ -209,7 +214,7 @@ const forgotPasswordPostController = asyncHandler(async (req, res, next) => {
 });
 
 // reset password controller
-const resetPasswordPostController = asyncHandler(async (req, res, next) => {
+const resetPasswordController = asyncHandler(async (req, res, next) => {
   try {
     // check user email reset link is expired or not
     // if user email reset link is expired return "Your email reset link is expired."
@@ -237,13 +242,13 @@ const resetPasswordPostController = asyncHandler(async (req, res, next) => {
 
     // Check if the reset token is invalid or expired
     if (!user) {
-      throw new ApiError(409, "Token is invalid or expired");
+      throw new ApiError(409, "Invalid or expired reset token.");
     }
 
     // Set a new password in the database with a new hashed password
     user.password = newPassword;
-    user.forgotPasswordToken = undefined;
-    user.forgotPasswordExpiry = undefined;
+    user.forgotPasswordToken = null;
+    user.forgotPasswordExpiry = null;
 
     // Save the user to the database
     await user.save();
@@ -257,7 +262,7 @@ const resetPasswordPostController = asyncHandler(async (req, res, next) => {
   }
 });
 
-const changePasswordPostController = asyncHandler(async (req, res, next) => {
+const changePasswordController = asyncHandler(async (req, res, next) => {
   // check user email reset link is expired or not
   // if user email reset link is expired return "Your email reset link is expired."
   // get password from frontend or req.body (newPassword, newPasswordTow)
@@ -274,6 +279,7 @@ const changePasswordPostController = asyncHandler(async (req, res, next) => {
   }
 
   // Check if newPassword and conformPassword match
+  // !TODO: delete in production for security reason
   if (newPassword !== conformPassword) {
     throw new ApiError(400, "Password or Conform Password don't match.");
   }
@@ -297,8 +303,8 @@ const changePasswordPostController = asyncHandler(async (req, res, next) => {
     .status(200)
     .json(
       new ApiResponse(
-        203,
-        { yourEmail: user.email },
+        200,
+        { userId: user._id },
         "Password was change successfully."
       )
     );
@@ -347,31 +353,27 @@ const emailVerificationController = asyncHandler(async (req, res, next) => {
 });
 
 // logout post controller
-const logoutPostController = asyncHandler(async (req, res, next) => {
-  try {
-    // Clear user cookies from the browser
-    res.clearCookie("access_token");
+const logoutController = asyncHandler(async (req, res, next) => {
+  // Clear user cookies from the browser
+  res.clearCookie("access_token", { expires: new Date(0) });
 
-    // Respond with a success message for logout
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          204,
-          { content: "204 No Content" },
-          "You are now logout successfully."
-        )
-      );
-  } catch (error) {
-    next(error);
-  }
+  // Respond with a success message for logout
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        204,
+        { content: "204 No Content" },
+        "You are now logout successfully."
+      )
+    );
 });
 module.exports = {
-  loginPostController,
-  signupPostController,
-  forgotPasswordPostController,
-  resetPasswordPostController,
-  logoutPostController,
+  loginController,
+  signupController,
+  forgotPasswordController,
+  resetPasswordController,
+  logoutController,
   emailVerificationController,
-  changePasswordPostController,
+  changePasswordController,
 };
