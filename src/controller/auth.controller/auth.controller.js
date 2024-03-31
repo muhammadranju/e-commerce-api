@@ -26,7 +26,7 @@ const userEmailVerify = async ({ value }) => {
   });
 
   // Use a more secure method to find the user, such as User.findByIdAndValidate
-  const validatedUser = await User.findByIdAndValidate(user._id);
+  const validatedUser = await User.findById(user._id);
 
   return validatedUser;
 };
