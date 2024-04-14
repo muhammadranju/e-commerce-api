@@ -93,10 +93,10 @@ const sellerAuthMiddleware = async (req, res, next) => {
 
     // Set seller payload to req.seller for use in subsequent middleware
     req.seller = {
-      sellerId: seller.id,
-      contactNumber: seller.contactNumber,
+      sellerId: seller._id,
+      phoneNumber: seller.phoneNumber,
       name: seller.name,
-      isEmailVerify: seller.isEmailVerify,
+      isEmailVerified: seller.isEmailVerified,
       status: seller.status,
     };
 
