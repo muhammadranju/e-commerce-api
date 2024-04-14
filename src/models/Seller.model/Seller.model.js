@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const { v4: uuidv4 } = require("uuid");
 const {
   ModelRefNames,
   UserStatusEnum,
@@ -39,6 +41,13 @@ const sellerSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    sellerUID: {
+      type: String,
+      default: uuidv4(),
+    },
+
+    
+
     email: {
       type: String,
       required: true,
@@ -158,9 +167,9 @@ sellerSchema.methods.compareBcryptPassword = async function (password) {
 sellerSchema.methods.generateAccessToken = async function () {
   return jwt.sign(
     {
-      user_id: this._id,
+      seller_id: this._id,
       email: this.email,
-      username: this.username,
+      username: this.name,
       status: true,
     },
     process.env.SELLER_ACCESS_TOKEN_SECRET,
@@ -176,6 +185,25 @@ sellerSchema.methods.generateRefreshToken = async function () {
     process.env.SELLER_REFRESH_TOKEN_SECRET,
     { expiresIn: process.env.SELLER_REFRESH_TOKEN_EXPIRY }
   );
+};
+
+sellerSchema.methods.generateTemporaryToken = function () {
+  // This token should be client facing
+  // for example: for email verification unHashedToken should go into the user's mail
+  const unHashedToken = crypto.randomBytes(20).toString("hex");
+
+  // This should stay in the DB to compare at the time of verification
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(unHashedToken)
+    .digest("hex");
+
+  const SELLER_TEMPORARY_TOKEN_EXPIRY = 20 * 60 * 1000; // 20 minutes
+
+  // This is the expiry time for the token (20 minutes)
+  const tokenExpiry = Date.now() + SELLER_TEMPORARY_TOKEN_EXPIRY;
+
+  return { unHashedToken, hashedToken, tokenExpiry };
 };
 
 const Seller = mongoose.model(ModelRefNames.Seller, sellerSchema);
