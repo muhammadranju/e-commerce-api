@@ -3,46 +3,48 @@ const auth = require(`../../controller/seller.controller/seller.controller`);
 const profile = require(`../../controller/seller.controller/sellerProfile.controller`);
 
 const { sellerAuthMiddleware } = require(`../../middleware/auth.middleware`);
-const isLoginMiddleware = require(`../../middleware/isLogin.middleware`);
+const isLoginMiddleware = require(`../../middleware/isSellerLoginMiddleware`);
 
-const routerName = `seller`;
+const rateLimiter = require("../../utils/rateLimit.utils");
 
 // this route is reset password route patch using method
 router
   .route(`/auth/reset-password/:resetToken`)
-  .patch(auth.resetPasswordSellerPostController);
+  .patch(auth.resetPasswordSellerController);
 
 // this route send code on email verify token
 router
   .route(`/auth/verify-email/:verificationToken`)
-  .get(auth.emailVerificationSellerPostController);
+  .get(auth.emailVerificationSellerController);
 
 // register route using post method
 router
   .route(`/auth/register`)
-  .post(isLoginMiddleware, auth.signupSellerPostController);
+  .post(rateLimiter, isLoginMiddleware, auth.signupSellerController);
 
 // login route using post method
 router
   .route(`/auth/login`)
-  .post(isLoginMiddleware, auth.loginSellerPostController);
+  .post(rateLimiter, isLoginMiddleware, auth.loginSellerController);
 // register forgot password using post method
-router
-  .route(`/auth/forgot-password`)
-  .post(auth.forgotPasswordSellerPostController);
+router.route(`/auth/forgot-password`).post(auth.forgotPasswordSellerController);
 
 // protected routes start
 // logout route using post method
 router
   .route(`/auth/logout`)
-  .post(sellerAuthMiddleware, auth.logoutSellerPostController);
+  .post(sellerAuthMiddleware, auth.logoutSellerController);
+
+router
+  .route(`/profile/:seller_id`)
+  .get(sellerAuthMiddleware, profile.getSingleSellerProfilePostController);
 
 router
   .route(`/profile`)
   .get(sellerAuthMiddleware, profile.getSellerProfilePostController);
 
 router
-  .route(`/profile`)
+  .route(`/profile/:seller_id`)
   .patch(sellerAuthMiddleware, profile.updateSellerProfilePostController);
 
 module.exports = router;
