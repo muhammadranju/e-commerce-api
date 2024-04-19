@@ -183,7 +183,7 @@ const signupSellerController = asyncHandler(async (req, res) => {
 });
 
 // seller login post controller
-const loginSellerController = asyncHandler(async (req, res) => {
+const loginSellerController = asyncHandler(async (req, res, next) => {
   // Extract data from the frontend or request body
   const { email, phoneNumber, password } = req.body;
 
@@ -200,6 +200,10 @@ const loginSellerController = asyncHandler(async (req, res) => {
     $or: [{ email }, { phoneNumber }],
   });
 
+  if (!seller) {
+    throw new ApiError(400, "Invalid credentials.");
+  }
+
   const { unHashedToken, hashedToken, tokenExpiry } =
     seller.generateTemporaryToken();
 
@@ -208,9 +212,6 @@ const loginSellerController = asyncHandler(async (req, res) => {
 
   // If the email is not found in the database, throw an error message "Invalid credentials, email or password."
   // This error message indicates that either the email provided is not registered or the combination of email and password is incorrect
-  if (!seller) {
-    throw new ApiError(400, "Invalid credentials.");
-  }
 
   if (!seller.isEmailVerified) {
     await seller.save();
@@ -256,6 +257,7 @@ const loginSellerController = asyncHandler(async (req, res) => {
 
   // Return the response
   // This response could include a success message or any relevant data indicating a successful login
+
   return res
     .status(200)
     .json(

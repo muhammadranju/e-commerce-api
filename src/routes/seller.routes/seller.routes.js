@@ -44,7 +44,7 @@ router
   .get(sellerAuthMiddleware, profile.getSellerProfilePostController);
 
 router
-  .route(`/profile/:seller_id`)
+  .route(`/profile/`)
   .patch(sellerAuthMiddleware, profile.updateSellerProfilePostController);
 
 module.exports = router;
