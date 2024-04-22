@@ -2,6 +2,7 @@ const Seller = require("../../models/Seller.model/Seller.model");
 const ApiError = require("../../utils/ApiError");
 const ApiResponse = require("../../utils/ApiResponse");
 const asyncHandler = require("../../utils/asyncHandler");
+const { URI } = require("../../constants");
 
 /**
  * Handles the HTTP request for retrieving a specific seller's profile.
@@ -42,9 +43,19 @@ const getSingleSellerProfilePostController = asyncHandler(async (req, res) => {
   };
 
   // Return the seller's profile in the response
-  return res
-    .status(200)
-    .json(new ApiResponse(200, sellerInfo, "Get seller account successfully."));
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        links: {
+          self: `${URI}/seller/profile`,
+          next: `${URI}/seller/profile/${sellerId}`,
+        },
+        sellerInfo,
+      },
+      "Get seller account successfully."
+    )
+  );
 });
 
 /**
