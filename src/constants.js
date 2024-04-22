@@ -1,4 +1,5 @@
 const ApiVersion = "/api/v1";
+const URI = `http://localhost:3030${ApiVersion}`;
 
 /**
  * @type {{ ADMIN:"ADMIN", USER:"USER", EDITOR:"EDITOR", MANAGER:"MANAGER" SELLER:"SELLER"} as const}
@@ -159,4 +160,5 @@ module.exports = {
   PaymentMethods,
   AvailablePaymentStatus,
   PaymentStatus,
+  URI,
 };
