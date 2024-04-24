@@ -85,9 +85,19 @@ const getSellerProfilePostController = asyncHandler(async (req, res) => {
   }
 
   // Return the seller's profile in the response
-  return res
-    .status(200)
-    .json(new ApiResponse(200, seller, "Successfully retrieved your account."));
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        links: {
+          self: `${URI}/seller/profile`,
+          next: `${URI}/seller/profile/${sellerId}`,
+        },
+        seller,
+      },
+      "Successfully retrieved your account."
+    )
+  );
 });
 
 /**
@@ -150,9 +160,19 @@ const updateSellerProfilePostController = asyncHandler(async (req, res) => {
   await seller.save({ validateBeforeSave: false });
 
   // Return a success response with the updated seller data
-  return res
-    .status(200)
-    .json(new ApiResponse(200, seller, "Profile updated successfully"));
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        links: {
+          self: `${URI}/seller/profile`,
+          next: `${URI}/seller/profile/${seller._id}`,
+        },
+        seller,
+      },
+      "Profile updated successfully"
+    )
+  );
 });
 
 module.exports = {
