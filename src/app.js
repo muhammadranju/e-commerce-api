@@ -3,7 +3,7 @@ const app = express();
 const { ApiVersion } = require("./constants");
 
 // Import global controller functions
-const globalController = require("./controller/common.controller/common.controller");
+const { errorHandler, notFount } = require("./api/v1/common/controller");
 
 // Import middleware and routes
 const middleware = require("./app/middleware");
@@ -16,6 +16,6 @@ app.use(middleware);
 app.use(ApiVersion, routes);
 
 // Apply global controller functions for handling not found and error cases
-app.use([globalController.notFoundHandler, globalController.errorHandler]);
+app.use([notFount, errorHandler]);
 
 module.exports = app;
