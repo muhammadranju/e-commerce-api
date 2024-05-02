@@ -1,7 +1,7 @@
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 
-const logoutController = asyncHandler(async (req, res, next) => {
+const logoutController = asyncHandler(async (req, res, ) => {
   // Clear user cookies from the browser
   res.clearCookie("access_token", { expires: new Date(0) });
 

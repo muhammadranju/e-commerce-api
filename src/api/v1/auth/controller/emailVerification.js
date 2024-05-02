@@ -17,7 +17,7 @@ const userEmailVerify = async ({ value }) => {
 
   return validatedUser;
 };
-const emailVerificationController = asyncHandler(async (req, res, next) => {
+const emailVerificationController = asyncHandler(async (req, res) => {
   // Get verification token from params
   const { verificationToken } = req.params;
 

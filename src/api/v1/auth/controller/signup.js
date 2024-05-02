@@ -10,7 +10,7 @@ const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 const { ApiVersion, UserLoginType } = require("../../../../constants");
 
-const signupController = asyncHandler(async (req, res, next) => {
+const signupController = asyncHandler(async (req, res) => {
   // Get user data from req.body frontend side
   const { firstName, lastName, email, password, phoneNumber, gender } =
     req.body;

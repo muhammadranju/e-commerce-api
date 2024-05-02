@@ -7,7 +7,7 @@ const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 
-const forgotPasswordController = asyncHandler(async (req, res, next) => {
+const forgotPasswordController = asyncHandler(async (req, res) => {
   // Get User Email from frontend side.
   const { email } = req.body;
 

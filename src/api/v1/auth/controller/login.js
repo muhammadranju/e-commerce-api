@@ -4,7 +4,7 @@ const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 
-const loginController = asyncHandler(async (req, res, next) => {
+const loginController = asyncHandler(async (req, res) => {
   // Get User data from req.body frontend.
   const { username, email, password, phoneNumber } = req.body;
 
@@ -43,6 +43,7 @@ const loginController = asyncHandler(async (req, res, next) => {
   // Set user access token in cookies with secure and httpOnly options
   res.cookie("access_token", token, {
     maxAge: 60 * 60 * 24 * 1 * 1000, //30 days
+    // eslint-disable-next-line no-undef
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
   });

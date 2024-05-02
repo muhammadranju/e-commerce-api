@@ -3,7 +3,7 @@ const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 
-const changePasswordController = asyncHandler(async (req, res, next) => {
+const changePasswordController = asyncHandler(async (req, res) => {
   // check user email reset link is expired or not
   // if user email reset link is expired return "Your email reset link is expired."
   // get password from frontend or req.body (newPassword, newPasswordTow)
