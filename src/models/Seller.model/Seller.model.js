@@ -1,7 +1,7 @@
+/* eslint-disable no-undef */
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { v4: uuidv4 } = require("uuid");
 const {
   ModelRefNames,
   UserStatusEnum,
@@ -14,40 +14,16 @@ const {
 const bcrypt = require("bcryptjs");
 const sellerSchema = new mongoose.Schema(
   {
-    logo: {
-      _id: false,
-      type: {
-        url: String,
-        localPath: String,
-      },
-      default: {
-        url: `https://via.placeholder.com/200x200.png`,
-        localPath: "",
-      },
-    },
-    banner: {
-      _id: false,
-      type: {
-        url: String,
-        localPath: String,
-      },
-      default: {
-        url: `https://via.placeholder.com/1920x1080.png`,
-        localPath: "",
-      },
-    },
     name: {
       type: String,
       required: true,
       trim: true,
     },
-    sellerUID: {
-      type: String,
-      default: uuidv4(),
+    ShopId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: ModelRefNames.Store,
+      required: true,
     },
-
-    
-
     email: {
       type: String,
       required: true,
@@ -69,27 +45,6 @@ const sellerSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-    },
-    shopName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    shopUrlLink: { type: String },
-    shopDescription: {
-      type: String,
-      trim: true,
-    },
-    shopAddress: {
-      type: Object,
-      _id: false,
-      required: true,
-      addressLine: { type: String, required: true },
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      Country: { type: String, required: true },
-      postalCode: { type: Number, required: true },
     },
     phoneNumber: {
       type: Number,
