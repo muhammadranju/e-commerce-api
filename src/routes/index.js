@@ -20,7 +20,7 @@ const wishlistRoutes = require("./wishlists.routes/wishlists.routes");
 
 // import seller routers
 const sellerRoutes = require("./seller.routes/seller.routes");
-
+const storeRoutes = require("./store.routes/store.routes");
 // this routes is checking api health
 router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
@@ -34,8 +34,8 @@ router.use("/payment", paymentRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/brands", brandRoutes);
 router.use("/wishlist", wishlistRoutes);
-router.use("/products", [productRoutes, commentsRoutes]);
+router.use("/product", [productRoutes, commentsRoutes]);
 // defined a seller routers
-router.use("/seller", sellerRoutes);
+router.use("/seller", [sellerRoutes, storeRoutes]);
 
 module.exports = router;
