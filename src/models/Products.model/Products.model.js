@@ -17,7 +17,6 @@ const productSchema = new Schema(
 
     slug: {
       type: String,
-      required: true,
       lowercase: true,
     },
 
@@ -27,7 +26,7 @@ const productSchema = new Schema(
       // https://example.com/product/premium-quality-19/
     },
 
-    destruction: {
+    description: {
       type: String,
       required: true,
     },
@@ -52,7 +51,6 @@ const productSchema = new Schema(
 
     price: {
       type: Number,
-      required: true,
       default: this.regular_price,
     },
 
@@ -68,7 +66,7 @@ const productSchema = new Schema(
 
     weight: {
       type: String,
-      required: false,
+      required: true,
     },
 
     dimensions: {
@@ -77,31 +75,36 @@ const productSchema = new Schema(
       length: {
         type: Number,
         default: 0,
-        required: false,
+        required: true,
       },
 
       width: {
         type: Number,
-        required: false,
+        required: true,
       },
 
       height: {
         type: Number,
-        required: false,
+        required: true,
       },
     },
 
     attributes: [
       {
+        _id: false,
         id: Number,
         position: Boolean,
         variation: Boolean,
+        isVisible: Boolean,
         options: [],
       },
       {
         name: String,
-        position: Number,
-        visible: Boolean,
+        isVisible: {
+          type: Boolean,
+          default: false,
+        },
+        position: Boolean,
         variation: Boolean,
         options: [],
       },
@@ -112,25 +115,6 @@ const productSchema = new Schema(
       min: 0,
       max: 5,
       default: "0.00",
-    },
-
-    product_status: {
-      type: String,
-      enum: [AvailablePostStatus],
-      default: PostStatusEnum.PENDING,
-      // publish
-    },
-
-    seller_storeId: {
-      type: Schema.Types.ObjectId,
-      ref: ModelRefNames.Seller,
-      required: true,
-    },
-
-    category_id: {
-      type: Schema.Types.ObjectId,
-      ref: ModelRefNames.Category,
-      required: true,
     },
 
     cover_image: {
@@ -178,24 +162,55 @@ const productSchema = new Schema(
       },
     ],
 
+    product_status: {
+      type: String,
+      enum: AvailablePostStatus,
+      default: PostStatusEnum.PENDING,
+      // publish
+    },
+
+    seller_Id: {
+      type: Schema.Types.ObjectId,
+      ref: ModelRefNames.Seller,
+      required: true,
+    },
+    store_Id: {
+      type: Schema.Types.ObjectId,
+      ref: ModelRefNames.Store,
+      required: true,
+    },
+
+    category_id: {
+      type: Schema.Types.ObjectId,
+      ref: ModelRefNames.Category,
+      required: true,
+    },
+
     brand: {
       type: Schema.Types.ObjectId,
       ref: ModelRefNames.Brand,
       required: true,
     },
-    comments: {
-      type: Schema.Types.ObjectId,
-      ref: ModelRefNames.Comment,
-    },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: ModelRefNames.Comment,
+      },
+    ],
   },
   { timestamps: true }
 );
 
-productSchema.pre("save", async function () {
+productSchema.pre("save", async function (next) {
   if (this.isModified("title")) {
-    this.slug = slugify(this.title);
+    this.slug = `${slugify(this.title)}-${randomstring.generate({
+      length: 4,
+      charset: "alphanumeric",
+    })}`;
     this.permalink = `https://example.com/product/${this.slug}`;
   }
+  this.price = this.regular_price;
+  next();
 });
 
 const Product = model(ModelRefNames.Product, productSchema);
