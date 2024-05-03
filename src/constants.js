@@ -1,5 +1,5 @@
 const ApiVersion = "/api/v1";
-const URI = `http://localhost:3030${ApiVersion}`;
+const baseURI = `http://localhost:3030${ApiVersion}`;
 
 /**
  * @type {{ ADMIN:"ADMIN", USER:"USER", EDITOR:"EDITOR", MANAGER:"MANAGER" SELLER:"SELLER"} as const}
@@ -101,7 +101,7 @@ const UserLoginType = {
 const AvailableSocialLogins = Object.values(UserLoginType);
 
 /**
- * @type {{ User:"User"; Product:"Product"; Comment:"Comment"; Order:"Order"; Seller:"Seller";  Shop: "Shop"; Payment:"Payment"; Category:"Category"; Cart:"Cart"; Wishlist:"Wishlist"; Brand:"Brand"; Address:"Address"; OrdersItem:"OrdersItem";} as const}
+ * @type {{ User:"User"; Product:"Product"; Comment:"Comment"; Order:"Order"; Seller:"Seller";  Store: "Store"; Payment:"Payment"; Category:"Category"; Cart:"Cart"; Wishlist:"Wishlist"; Brand:"Brand"; Address:"Address"; OrdersItem:"OrdersItem";} as const}
  */
 // Model References
 const ModelRefNames = {
@@ -110,7 +110,7 @@ const ModelRefNames = {
   Comment: "Comment",
   Order: "Order",
   Seller: "Seller",
-  Shop: "Shop",
+  Store: "Store",
   Payment: "Payment",
   Category: "Category",
   Cart: "Cart",
@@ -161,5 +161,5 @@ module.exports = {
   PaymentMethods,
   AvailablePaymentStatus,
   PaymentStatus,
-  URI,
+  baseURI,
 };
