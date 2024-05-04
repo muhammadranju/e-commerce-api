@@ -1,11 +1,15 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
 const mongoose = require("mongoose");
 const { DATABASE_NAME, DATABASE_QUERY } = require("../constants");
+const config = require("../config/config");
 
 // MongoDB URI for production environment
-const MONGODB_URI = process.env.MONGODB_URI; // REPLACE WITH YOUR OWN MONGODB URI
+// const MONGODB_URI = config.MONGODB_URI; // REPLACE WITH YOUR OWN MONGODB URI
 
 // MongoDB URI for local development environment
-const MONGODB_URI_LOCAL = process.env.MONGODB_URI_LOCAL; // REPLACE WITH YOUR LOCAL MONGODB URI
+const MONGODB_URI_LOCAL = config.MONGODB_URI_LOCAL; // REPLACE WITH YOUR LOCAL MONGODB URI
 
 // Function to establish connection with MongoDB
 async function connectDB() {

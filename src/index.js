@@ -1,15 +1,16 @@
 require("dotenv").config();
 const app = require("./app");
 const http = require("http");
-const DatabaseConnection = require("./config/DatabaseConnection");
+const databaseConnection = require("./db/databaseConnection");
+const config = require("./config/config");
 
-const PORT = process.env.PORT || 3030;
+const PORT = config.PORT || 3030;
 const server = http.createServer(app);
 
 const startServer = async () => {
   try {
     // Connect to the database
-    await DatabaseConnection();
+    await databaseConnection();
 
     // Start the HTTP server
     server.listen(PORT, () => {
