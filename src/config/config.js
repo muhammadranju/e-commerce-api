@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const config = {
+const _config = {
   BASE_URL: process.env.BASE_URL,
   PORT: process.env.PORT,
   MONGODB_URI: process.env.MONGODB_URI,
@@ -30,5 +30,6 @@ const config = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 };
+const config = Object.freeze(_config);
 
-module.exports = Object.freeze(config);
+module.exports = config;
