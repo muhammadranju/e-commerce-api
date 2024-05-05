@@ -34,7 +34,7 @@ router.use("/payment", paymentRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/brands", brandRoutes);
 router.use("/wishlist", wishlistRoutes);
-router.use("/product", [productRoutes, commentsRoutes]);
+router.use("/products", [productRoutes, commentsRoutes]);
 // defined a seller routers
 router.use("/seller", [sellerRoutes, storeRoutes]);
 

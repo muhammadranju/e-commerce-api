@@ -1,18 +1,12 @@
 const router = require("express").Router();
-const address = require("../../controller/address.controller/address.controller");
-const Auth = require("../../middleware/auth.middleware");
+const { controller: address } = require("../../api/v1/address/");
+const auth = require("../../middleware/auth.middleware");
 
-router
-  .route("/profile/address")
-  .get(Auth.authMiddleware, address.fetchAddressGetController);
-router
-  .route("/profile/address")
-  .post(Auth.authMiddleware, address.createAddressPostController);
-router
-  .route("/profile/address")
-  .patch(Auth.authMiddleware, address.updateAddressPatchController);
+router.route("/profile/address").get(auth.authMiddleware, address.findAll);
+router.route("/profile/address").post(auth.authMiddleware, address.create);
+router.route("/profile/address").patch(auth.authMiddleware, address.update);
 router
   .route("/profile/address/:addressId")
-  .delete(Auth.authMiddleware, address.deleteAddressDeleteController);
+  .delete(auth.authMiddleware, address.deleteAddress);
 
 module.exports = router;

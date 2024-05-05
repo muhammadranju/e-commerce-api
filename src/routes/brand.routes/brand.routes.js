@@ -1,10 +1,10 @@
 const router = require("express").Router();
-const brand = require("../../controller/brand.controller/brand.controller");
+const { controller: brand } = require("../../api/v1/brand");
 
-router.route("/").get(brand.fetchAllBrandsGetController);
-router.route("/").post(brand.createBrandPostController);
-router.route("/:brandId").get(brand.getBrandByIdGetController);
-router.route("/:brandId").patch(brand.updateBrandByIdPatchController);
-router.route("/:brandId").delete(brand.deleteBrandByIdDeleteController);
+router.route("/").get(brand.findAll);
+router.route("/").post(brand.create);
+router.route("/:brandId").get(brand.findSingle);
+router.route("/:brandId").patch(brand.update);
+router.route("/:brandId").delete(brand.deleteBrand);
 
 module.exports = router;
