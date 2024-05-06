@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
 const slugify = require("slugify");
 const randomstring = require("randomstring");
+const { v4: uuid4 } = require("uuid");
 const {
   ModelRefNames,
   PostStatusEnum,
@@ -22,6 +23,7 @@ const productSchema = new Schema(
 
     product_uid: {
       type: String,
+      default: uuid4(),
     }, //product_id
 
     permalink: {
