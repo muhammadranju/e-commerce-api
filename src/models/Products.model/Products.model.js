@@ -214,7 +214,11 @@ productSchema.pre("save", async function (next) {
     this.permalink = `https://example.com/product/${this.slug}`;
   }
   this.price = this.regular_price;
-  // this.default_attributes = this.attributes;
+
+  this.default_attributes = this.attributes.map((attr) => ({
+    ...attr,
+    options: attr.options.slice(0, 1),
+  }));
   next();
 });
 

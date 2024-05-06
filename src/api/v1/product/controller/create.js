@@ -126,11 +126,6 @@ const productCreateController = asyncHandler(async (req, res) => {
     seller_Id: seller._id,
   });
 
-  product.default_attributes = attributes.map((attr) => ({
-    ...attr,
-    options: attr.options.slice(0, 1),
-  }));
-
   // Save the product to the database
   await product.save();
 
