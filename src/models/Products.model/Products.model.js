@@ -97,21 +97,19 @@ const productSchema = new Schema(
 
     attributes: [
       {
-        _id: false,
         id: Number,
-        position: Boolean,
+        name: String,
+        position: Number,
+        visible: Boolean,
         variation: Boolean,
-        isVisible: Boolean,
         options: [],
       },
+    ],
+
+    default_attributes: [
       {
+        id: Number,
         name: String,
-        isVisible: {
-          type: Boolean,
-          default: false,
-        },
-        position: Boolean,
-        variation: Boolean,
         options: [],
       },
     ],
@@ -216,6 +214,7 @@ productSchema.pre("save", async function (next) {
     this.permalink = `https://example.com/product/${this.slug}`;
   }
   this.price = this.regular_price;
+  // this.default_attributes = this.attributes;
   next();
 });
 
