@@ -20,6 +20,10 @@ const productSchema = new Schema(
       lowercase: true,
     },
 
+    product_uid: {
+      type: String,
+    }, //product_id
+
     permalink: {
       type: String,
       lowercase: true,
