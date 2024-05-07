@@ -1,3 +1,5 @@
+const config = require("../../../../config/config");
+
 /**
  * Error handler middleware.
  *
@@ -7,6 +9,7 @@
  * @param {Function} _next - The next middleware function.
  * @return {Object} The response containing error details.
  */
+// eslint-disable-next-line no-unused-vars
 const errorHandler = (err, _req, res, _next) => {
   // Set the HTTP status code to the error status code if available,
   // otherwise set it to 500 (Internal Server Error).
@@ -18,7 +21,7 @@ const errorHandler = (err, _req, res, _next) => {
     statusCode,
     message: err.message,
     error: err,
-    stackTrace: err.stack,
+    stackTrace: config.ENV === "development" ? err.stack : "",
   };
 
   // Send the response with the error details.
