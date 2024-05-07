@@ -3,7 +3,9 @@ const app = express();
 const { ApiVersion } = require("./constants");
 
 // Import global controller functions
-const { errorHandler, notFount } = require("./api/v1/common/controller");
+const {
+  controller: { notFount, errorHandler },
+} = require("./api/v1/global/");
 
 // Import middleware and routes
 const middleware = require("./app/middleware");
