@@ -1,4 +1,4 @@
-const { URI } = require("../../../../../constants");
+const { baseURI } = require("../../../../../constants");
 const Seller = require("../../../../../models/Seller.model/Seller.model");
 const ApiError = require("../../../../../utils/ApiError");
 const ApiResponse = require("../../../../../utils/ApiResponse");
@@ -27,8 +27,8 @@ const profileCreateController = asyncHandler(async (req, res) => {
       200,
       {
         links: {
-          self: `${URI}/seller/profile`,
-          next: `${URI}/seller/profile/${sellerId}`,
+          self: `${baseURI}/seller/profile`,
+          next: `${baseURI}/seller/profile/${sellerId}`,
         },
         seller,
       },

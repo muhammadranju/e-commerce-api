@@ -1,9 +1,9 @@
-const create = require("./create");
+const findOne = require("./findOne");
 const findSingle = require("./findSingle");
 const update = require("./update");
 
 module.exports = {
-  create,
+  findOne,
   findSingle,
   update,
 };
