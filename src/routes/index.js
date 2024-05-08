@@ -28,7 +28,7 @@ router.get(`${ApiVersion}/health`, (req, res) =>
 
 router.use("/users", [userRoutes, addressRoutes]);
 router.use("/auth", authRoutes);
-router.use("/cart", cartsRoutes);
+router.use("/carts", cartsRoutes);
 router.use("/checkout", ordersRoutes);
 router.use("/payment", paymentRoutes);
 router.use("/categories", categoriesRoutes);

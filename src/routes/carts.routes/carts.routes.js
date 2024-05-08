@@ -1,9 +1,13 @@
 const router = require("express").Router();
 
-router.route("/").get();
-router.route("/add").post();
-router.route("/update").patch();
-router.route("/remove").delete();
-router.route("/clear").delete();
+const { controller: cart } = require("../../api/v1/cart");
+
+const { authMiddleware } = require("../../middleware/auth.middleware");
+
+router.route("/").get(authMiddleware, cart.findAll);
+router.route("/").post(authMiddleware, cart.create);
+router.route("/:productId").patch(authMiddleware, cart.update);
+router.route("/:productId").delete(authMiddleware, cart.deleteItem);
+router.route("/").delete(authMiddleware, cart.deleteAll);
 
 module.exports = router;
