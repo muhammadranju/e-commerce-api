@@ -6,14 +6,12 @@ const wishlistSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: ModelRefNames.User, // Replace 'User' with your User model name
-      unique: false, // Allow multiple wishlists per user (optional)
     },
     products: [
       {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: ModelRefNames.Product, // Replace 'Product' with your Product model name
-        unique: true, // Ensure no product duplicates within a wishlist (optional)
         sparse: true, // Exclude empty product references (optional)
       },
     ],

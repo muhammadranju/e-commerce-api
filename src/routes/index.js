@@ -26,14 +26,14 @@ router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
 );
 
-router.use("/user", [userRoutes, addressRoutes]);
+router.use("/users", [userRoutes, addressRoutes]);
 router.use("/auth", authRoutes);
 router.use("/cart", cartsRoutes);
 router.use("/checkout", ordersRoutes);
 router.use("/payment", paymentRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/brands", brandRoutes);
-router.use("/wishlist", wishlistRoutes);
+router.use("/wishlists", wishlistRoutes);
 router.use("/products", [productRoutes, commentsRoutes]);
 // defined a seller routers
 router.use("/seller", [sellerRoutes, storeRoutes]);

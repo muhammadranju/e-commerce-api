@@ -6,12 +6,12 @@ const asyncHandler = require("../../../../utils/asyncHandler");
 const getWishlistsController = asyncHandler(async (req, res) => {
   const userId = req.user.userId || req.params.userId;
 
-  const wishlist = await Wishlist.findOne({ user: userId })
-    .populate("products")
-    .populate("user") // Populate product details
-    .select("+");
+  const wishlist = await Wishlist.findOne({ user: userId }).populate(
+    "products",
+    "title product_uid short_description regular_price cover_image"
+  );
 
-  if (!wishlist) {
+  if (!wishlist.products.length) {
     throw new ApiError(404, "Wishlist not found for this user");
   }
   return res

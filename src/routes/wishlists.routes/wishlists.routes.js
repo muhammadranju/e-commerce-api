@@ -1,7 +1,11 @@
 const router = require("express").Router();
 
-router.route("/").get();
-router.route("/add").post();
-router.route("/remove").delete();
+const { authMiddleware } = require("../../middleware/auth.middleware");
+
+const { controller: wishlist } = require("../../api/v1/wishlist");
+
+router.route("/").get(authMiddleware, wishlist.findAll);
+router.route("/").post(authMiddleware, wishlist.create);
+router.route("/").delete(authMiddleware, wishlist.deleteItem);
 
 module.exports = router;
