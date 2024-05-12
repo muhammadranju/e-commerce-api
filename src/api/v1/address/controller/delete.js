@@ -6,14 +6,24 @@ const asyncHandler = require("../../../../utils/asyncHandler");
 
 const addressDeleteController = asyncHandler(async (req, res) => {
   // Destructuring addressId from request parameters
-  const { addressId } = req.params;
+  const { addressId } = req.body;
+  const userId = req.user?.userId;
+
+  const findAddress = await Address.findById({ _id: addressId });
 
   // Fetching the address by address ID and populating user
-  const user = await User.findById({ _id: req.user?.userId });
+  const user = await User.findById({ _id: userId });
 
+  // Check if user exists
   if (!user) {
-    return res.status(404).json(new ApiError(404, "User not found."));
+    throw new ApiError(404, "User not found.");
   }
+
+  // Check if address belongs to user
+  if (!user._id.equals(findAddress.userId)) {
+    throw new ApiError(400, "Address does not belong to user");
+  }
+
   // This method created by me and ChatGPT and i thing this code more scalable
   // Find the address to delete
   const addressToDelete = user.addresses.find((address) =>
