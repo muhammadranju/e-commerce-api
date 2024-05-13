@@ -47,9 +47,9 @@ const OrderStatusEnum = {
   PENDING: "PENDING",
   CANCELLED: "CANCELLED",
   DELIVERED: "DELIVERED",
-  PLACED: "PLACED ",
-  PROCESSING: "PROCESSING  ",
-  SHIPPED: "SHIPPED  ",
+  PLACED: "PLACED",
+  PROCESSING: "PROCESSING",
+  SHIPPED: "SHIPPED",
 };
 const AvailableOrderStatuses = Object.values(OrderStatusEnum);
 
