@@ -1,7 +1,9 @@
 const { OrderStatusEnum, PaymentStatus } = require("../../../../constants");
 const Order = require("../../../../models/Orders.model/Orders.model");
+const User = require("../../../../models/User.model/User.model");
 const OrdersItem = require("../../../../models/OrdersItem.model/OrdersItem.model");
 const Product = require("../../../../models/Products.model/Products.model");
+const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 
@@ -10,6 +12,8 @@ const createOrderController = asyncHandler(async (req, res) => {
   const { items, shippingAddressId } = req.body;
   const userId = req.user.userId;
 
+  const user = await User.findById(userId);
+
   // Use Promise.all to handle asynchronous operations for each item in parallel
   const orderItems = await Promise.all(
     items.map(async (item) => {
@@ -17,11 +21,11 @@ const createOrderController = asyncHandler(async (req, res) => {
       const product = await Product.findById(item.productId);
       // Check if the product exists
       if (!product) {
-        throw new Error("Invalid product ID");
+        throw new ApiError(400, "Invalid product ID");
       }
 
       // Create an order item instance with necessary details
-      const orderItem = new OrdersItem({
+      let orderItem = new OrdersItem({
         product: item.productId,
         quantity: item.quantity,
         price: product.regular_price,
@@ -48,7 +52,14 @@ const createOrderController = asyncHandler(async (req, res) => {
     shippingAddressId, // Default shipping address ID
     paymentStatus: PaymentStatus.PENDING, // Default payment status
   });
+
+  // if (user._id !== userId) {
+  //   throw new ApiError(401, "Unauthorized user ");
+  // }
+
+  user.orders.push(order._id);
   // Save the order to the database
+  await user.save();
   await order.save();
 
   // Respond with success status and the created order
