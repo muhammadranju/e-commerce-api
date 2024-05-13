@@ -3,18 +3,9 @@ const { ModelRefNames } = require("../../constants");
 
 const OrdersItemsSchema = new mongoose.Schema(
   {
-    orderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: ModelRefNames.Order,
-      required: true,
-    },
-    productId: {
+    product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: ModelRefNames.Product,
-      required: true,
-    },
-    name: {
-      type: String,
       required: true,
     },
     quantity: {
@@ -26,21 +17,36 @@ const OrdersItemsSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
-    discount: {
-      type: Number,
-      default: 0,
-    },
-    // Additional fields you might need
-    sku: { type: String },
-    image: { type: String },
-    size: { type: String },
-    color: { type: String },
-    // etc.
   },
+
+  // name: {
+  //   type: String,
+  //   required: true,
+  // },
+  // quantity: {
+  //   type: Number,
+  //   required: true,
+  //   min: 1,
+  // },
+  // price: {
+  //   type: Number,
+  //   required: true,
+  // },
+  // totalPrice: {
+  //   type: Number,
+  //   required: true,
+  // },
+  // discount: {
+  //   type: Number,
+  //   default: 0,
+  // },
+  // // Additional fields you might need
+  // sku: { type: String },
+  // image: { type: String },
+  // size: { type: String },
+  // color: { type: String },
+  // etc.
+
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields
   }

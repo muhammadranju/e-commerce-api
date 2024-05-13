@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, default: mongoose } = require("mongoose");
 const {
   ModelRefNames,
   OrderStatusEnum,
@@ -16,20 +16,9 @@ const orderSchema = new Schema(
     // Items ordered
     items: [
       {
-        product: {
-          type: Schema.Types.ObjectId,
-          ref: ModelRefNames.Product,
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-          min: 1,
-        },
-        price: {
-          type: Number,
-          required: true,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: ModelRefNames.OrdersItem,
+        required: true,
       },
     ],
     // Total amount of the order
@@ -38,6 +27,10 @@ const orderSchema = new Schema(
       required: true,
     },
     // Shipping address
+    shippingAddressId: {
+      type: Schema.Types.ObjectId,
+      ref: ModelRefNames.Address,
+    },
     shippingAddress: {
       type: {
         firstName: {
@@ -69,20 +62,20 @@ const orderSchema = new Schema(
       },
     },
     // Payment information
-    paymentInfo: {
-      type: {
-        method: {
-          type: String,
-          required: true,
-        },
-        transactionId: {
-          type: String,
-        },
-        amount: {
-          type: Number,
-        },
-      },
-    },
+    // paymentInfo: {
+    //   type: {
+    //     method: {
+    //       type: String,
+    //       required: true,
+    //     },
+    //     transactionId: {
+    //       type: String,
+    //     },
+    //     amount: {
+    //       type: Number,
+    //     },
+    //   },
+    // },
     // Order status
     status: {
       type: String,
