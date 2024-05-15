@@ -1,5 +1,9 @@
-const { VerifyStatus } = require("../../../../constants");
+const { VerifyStatus, baseURI, ApiVersion } = require("../../../../constants");
 const User = require("../../../../models/User.model/User.model");
+const {
+  sendEmail,
+  emailVerificationMailgenContent,
+} = require("../../../../services/emailSend.service");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
@@ -23,14 +27,31 @@ const loginController = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid credential, email or password.");
   }
 
+  // Generate a temporary token for email verification
+  const { unHashedToken, hashedToken, tokenExpiry } =
+    user.generateTemporaryToken();
+
   // Check if user's email is verified
-  if (user.isEmailVerify === VerifyStatus.UNVERIFIED) {
+  if (user.isEmailVerified === VerifyStatus.UNVERIFIED) {
+    // Set the temporary token in the user object
+    user.emailVerificationToken = hashedToken;
+    user.emailVerificationExpiry = tokenExpiry;
+
+    sendEmail({
+      email: user?.email,
+      subject: "Please verify your email",
+      mailgenContent: emailVerificationMailgenContent(
+        `${user?.firstName} ${user?.lastName}`,
+        `${req.protocol}:/${req.get(
+          "host"
+        )}${ApiVersion}/auth/verify-email/${unHashedToken}`
+      ),
+    });
     throw new ApiError(
       401,
-      "You must be verify your email first. please try again later"
+      "You must be verify your email first. Please check your email for verification link."
     );
   }
-
   // Check if the password matches using bcrypt
   const passwordIsMatch = await user.compareBcryptPassword(password);
   if (!passwordIsMatch) {
@@ -48,12 +69,34 @@ const loginController = asyncHandler(async (req, res) => {
     httpOnly: true,
   });
 
+  // Create links for HATEOAS
+  const links = [
+    {
+      rel: "self",
+      href: `${baseURI}/user/profile`, // Example URL for user profile
+      method: "GET",
+    },
+    {
+      rel: "update_profile",
+      href: `${baseURI}/user/profile/update`, // Example URL for updating user profile
+      method: "PATCH",
+    },
+    {
+      rel: "logout",
+      href: `${baseURI}/user/logout`, // Example URL for logging out
+      method: "POST",
+    },
+  ];
   // Respond with success message
 
   res
     .status(200)
     .json(
-      new ApiResponse(200, { token }, "User login to account successfully. ")
+      new ApiResponse(
+        200,
+        { token, links },
+        "User login to account successfully. "
+      )
     );
 });
 
