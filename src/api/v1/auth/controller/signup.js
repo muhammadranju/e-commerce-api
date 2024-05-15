@@ -55,6 +55,8 @@ const signupController = asyncHandler(async (req, res) => {
   // Generate a temporary token for email verification
   const { unHashedToken, hashedToken, tokenExpiry } =
     user.generateTemporaryToken();
+  console.log("unHashedToken", unHashedToken);
+  console.log("hashedToken", hashedToken);
 
   // Set the temporary token in the user object
   user.emailVerificationToken = hashedToken;
@@ -69,16 +71,31 @@ const signupController = asyncHandler(async (req, res) => {
     subject: "Please verify your email",
     mailgenContent: emailVerificationMailgenContent(
       `${user?.firstName} ${user?.lastName}`,
-      `${req.protocol}://${req.get(
-        "host"
-      )}/${ApiVersion}/auth/verify-email/${unHashedToken}`
+      `${req.myHost}${ApiVersion}/auth/verify-email/${unHashedToken}`
     ),
   });
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "verify_email",
+      href: `${req.myHost}${ApiVersion}/auth/verify-email/${unHashedToken}`,
+      method: "GET",
+      description: "Verify Email",
+    },
+    // Add more links as needed
+  ];
 
   // Respond with a success message
   return res
     .status(201)
-    .json(new ApiResponse(201, user, "User account created successfully!"));
+    .json(
+      new ApiResponse(
+        201,
+        { user, links },
+        "User account created successfully!"
+      )
+    );
 });
 
 module.exports = signupController;
