@@ -1,5 +1,9 @@
 const crypto = require("crypto");
-const { UserStatusEnum, VerifyStatus } = require("../../../../constants");
+const {
+  UserStatusEnum,
+  VerifyStatus,
+  ApiVersion,
+} = require("../../../../constants");
 const User = require("../../../../models/User.model/User.model");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
@@ -7,16 +11,12 @@ const asyncHandler = require("../../../../utils/asyncHandler");
 
 const userEmailVerify = async ({ value }) => {
   // Find a user with the provided email verification token
-  const user = await User.findOne({
+  return await await User.findOne({
     emailVerificationToken: value,
     emailVerificationExpiry: { $gt: Date.now() },
   });
-
-  // Use a more secure method to find the user, such as User.findByIdAndValidate
-  const validatedUser = await User.findById(user._id);
-
-  return validatedUser;
 };
+
 const emailVerificationController = asyncHandler(async (req, res) => {
   // Get verification token from params
   const { verificationToken } = req.params;
@@ -37,7 +37,13 @@ const emailVerificationController = asyncHandler(async (req, res) => {
 
   // Check if the user is valid
   if (!user) {
-    throw new ApiResponse(409, {}, "Token is invalid or expired");
+    throw new ApiError(409, {
+      error: "Token is invalid or expired",
+      rel: "login",
+      href: `${req.myHost}${ApiVersion}/auth/login`,
+      method: "POST",
+      description: "Login",
+    });
   }
   // Update the user's email verification status and approval status
   // Now we can remove the associated email token and expiry date as we no  longer need them
@@ -49,13 +55,20 @@ const emailVerificationController = asyncHandler(async (req, res) => {
   // Save the user to the database (validateBeforeSave is set to false)
   await user.save({ validateBeforeSave: false });
 
-  // Respond with success message
-
+  // HATEOAS links
+  const links = [
+    {
+      rel: "login",
+      href: `${req.myHost}${ApiVersion}/auth/login`,
+      method: "POST",
+      description: "Login",
+    },
+    // Add more links as needed
+  ];
+  // Respond with success message to the user that their email has been successfully verified and they can proceed with using the platform now
   return res
     .status(200)
-    .json(
-      new ApiResponse(200, { message: true }, "Successfully email verified.✅")
-    );
+    .json(new ApiResponse(200, { links }, "Successfully email verified."));
 });
 
 module.exports = emailVerificationController;
