@@ -1,4 +1,4 @@
-const { VerifyStatus, baseURI, ApiVersion } = require("../../../../constants");
+const { VerifyStatus, ApiVersion } = require("../../../../constants");
 const User = require("../../../../models/User.model/User.model");
 const {
   sendEmail,
@@ -37,14 +37,14 @@ const loginController = asyncHandler(async (req, res) => {
     user.emailVerificationToken = hashedToken;
     user.emailVerificationExpiry = tokenExpiry;
 
+    await user.save();
+
     sendEmail({
       email: user?.email,
-      subject: "Please verify your email",
+      subject: "Please verify your email reminder account.",
       mailgenContent: emailVerificationMailgenContent(
         `${user?.firstName} ${user?.lastName}`,
-        `${req.protocol}:/${req.get(
-          "host"
-        )}${ApiVersion}/auth/verify-email/${unHashedToken}`
+        `${req.myHost}${ApiVersion}/auth/verify-email/${unHashedToken}`
       ),
     });
     throw new ApiError(
@@ -73,17 +73,17 @@ const loginController = asyncHandler(async (req, res) => {
   const links = [
     {
       rel: "self",
-      href: `${baseURI}/user/profile`, // Example URL for user profile
+      href: `${req.myHost}${ApiVersion}/users/profile`, // Example URL for user profile
       method: "GET",
     },
     {
       rel: "update_profile",
-      href: `${baseURI}/user/profile/update`, // Example URL for updating user profile
+      href: `${req.myHost}${ApiVersion}/users/profile`, // Example URL for updating user profile
       method: "PATCH",
     },
     {
       rel: "logout",
-      href: `${baseURI}/user/logout`, // Example URL for logging out
+      href: `${req.myHost}${ApiVersion}/auth/logout`, // Example URL for logging out
       method: "POST",
     },
   ];
@@ -95,7 +95,7 @@ const loginController = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { token, links },
-        "User login to account successfully. "
+        "User login to account successfully."
       )
     );
 });
