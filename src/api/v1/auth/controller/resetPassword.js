@@ -51,10 +51,20 @@ const resetPasswordController = asyncHandler(async (req, res) => {
   // Save the user to the database
   await user.save();
 
+  // HATEOAS links
+  const host = req.apiHost;
+  const links = [
+    {
+      rel: "login",
+      href: `${host}/auth/login`,
+      method: "POST",
+      description: "Login",
+    },
+  ];
   // Respond with success message
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Password was change successfully."));
+    .json(new ApiResponse(200, { links }, "Password was change successfully."));
 });
 
 module.exports = resetPasswordController;
