@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs"); // For password hashing
 const jwt = require("jsonwebtoken");
@@ -128,10 +129,16 @@ const userSchema = new Schema(
         ref: ModelRefNames.Address,
       },
     ],
-    wishList: [
+    wishlists: [
       {
         type: Schema.Types.ObjectId,
-        ref: ModelRefNames.Product,
+        ref: ModelRefNames.Wishlist,
+      },
+    ],
+    carts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: ModelRefNames.Cart,
       },
     ],
     orders: [
