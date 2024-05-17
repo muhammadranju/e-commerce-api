@@ -55,11 +55,12 @@ const emailVerificationController = asyncHandler(async (req, res) => {
   // Save the user to the database (validateBeforeSave is set to false)
   await user.save({ validateBeforeSave: false });
 
+  const host = req.apiHost;
   // HATEOAS links
   const links = [
     {
       rel: "login",
-      href: `${req.myHost}${ApiVersion}/auth/login`,
+      href: `${host}/auth/login`,
       method: "POST",
       description: "Login",
     },
