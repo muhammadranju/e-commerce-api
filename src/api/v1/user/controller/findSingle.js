@@ -5,18 +5,56 @@ const asyncHandler = require("../../../../utils/asyncHandler");
 
 const getController = asyncHandler(async (req, res) => {
   // get user from database using user id
-  const user = await User.findById({ _id: req.user?.userId }).select(
-    "-password -accessToken -isEmailVerify -status"
-  );
+  const user = await User.findById({ _id: req.user?.userId })
+    .populate("addresses")
+    .populate([{ path: "wishlists", populate: "products" }])
+    .populate([{ path: "orders", populate: "items" }])
+    .populate([{ path: "carts", populate: "items.productId" }]);
+  // .select("-password -accessToken -isEmailVerify -status");
 
   // check user is found or not in case it work
   if (!user) {
     throw new ApiError(404, "User not found");
   }
 
+  // HATEOAS links
+  const links = [
+    {
+      rel: "update_profile",
+      href: "/users/profile",
+      method: "PUT",
+      description: "Update Profile",
+    },
+    {
+      rel: "view_addresses",
+      href: "/user/profile/address",
+      method: "GET",
+      description: "View Addresses",
+    },
+    {
+      rel: "view_wishlists",
+      href: "/wishlists",
+      method: "GET",
+      description: "View Wishlists",
+    },
+    {
+      rel: "view_orders",
+      href: "/orders",
+      method: "GET",
+      description: "View Orders",
+    },
+    {
+      rel: "view_cart",
+      href: "/cart",
+      method: "GET",
+      description: "View Cart",
+    },
+    // Add more links as needed
+  ];
+
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "user data get successfully."));
+    .json(new ApiResponse(200, { user, links }, "user data get successfully."));
 });
 
 module.exports = getController;
