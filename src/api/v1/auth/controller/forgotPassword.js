@@ -11,6 +11,7 @@ const forgotPasswordController = asyncHandler(async (req, res) => {
   // Get User Email from frontend side.
   const { email } = req.body;
 
+  const host = req.apiHost;
   // Check if user with the provided email exists
   const user = await User.findOne({ email });
 
@@ -36,11 +37,20 @@ const forgotPasswordController = asyncHandler(async (req, res) => {
     subject: "Password reset request",
     mailgenContent: forgotPasswordMailgenContent(
       `${user?.firstName} ${user?.lastName}`,
-      `${req.protocol}://${req.get(
-        "host"
-      )}/api/v1/auth/reset-password/${unHashedToken}`
+      `${host}/auth/reset-password/${unHashedToken}`
     ),
   });
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "reset_password",
+      href: `${host}/auth/reset-password`,
+      method: "PATCH",
+      description: "Reset Password",
+    },
+    // Add more links as needed
+  ];
 
   // Respond with success message
   return res
@@ -49,6 +59,7 @@ const forgotPasswordController = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { email: user?.email },
+        links,
         "Password reset mail has been sent on your mail id"
       )
     );
