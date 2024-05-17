@@ -1,66 +1,67 @@
-const User = require("../../../../models/User.model/User.model");
+const mongoose = require("mongoose");
 const Address = require("../../../../models/Address.model/Address.model");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
+const { ApiVersion } = require("../../../../constants");
 
-// Function to update an address by ID
-async function updateAddress(addressId, updatedFields) {
-  // Fetching the address by ID
-  const address = await Address.findById(addressId);
-
-  // Updating address fields
-  address.addressName = updatedFields.addressName ?? address.addressName;
-  address.addressLine1 = updatedFields.addressLine1 ?? address.addressLine1;
-  address.addressLine2 = updatedFields.addressLine2 ?? address.addressLine2;
-  address.city = updatedFields.city ?? address.city;
-  address.state = updatedFields.state ?? address.state;
-  address.postalCode = updatedFields.postalCode ?? address.postalCode;
-  address.phoneNumber = updatedFields.phoneNumber ?? address.phoneNumber;
-  address.companyName = updatedFields.companyName ?? address.companyName;
-  address.isDefaultDelivery =
-    updatedFields.isDefaultDelivery ?? address.isDefaultDelivery;
-  address.isDefaultBilling =
-    updatedFields.isDefaultBilling ?? address.isDefaultBilling;
-
-  // Saving the updated address
-  await address.save();
-}
 const addressUpdateController = asyncHandler(async (req, res) => {
   // Destructuring request body for address details
-  const { addressName } = req.body;
+  const { addressId } = req.body;
+  const userId = req.user?.userId;
 
-  // Fetching the user by user ID from request and populating addresses
-  const user = await User.findById({ _id: req.user?.userId })?.populate(
-    "addresses"
-  );
+  const host = `${req.myHost}${ApiVersion}`;
 
-  // Checking if the provided address name matches any existing addresses
-  if (
-    addressName !== user?.addresses[0]?.addressName &&
-    addressName !== user?.addresses[1]?.addressName
-  ) {
-    throw new ApiError(400, "Invalid Address Name, Please provide valid name.");
+  if (!mongoose.Types.ObjectId.isValid(addressId)) {
+    throw new ApiError(
+      400,
+      "Invalid address id. Please provide a valid address id."
+    );
   }
 
-  // If address name is not valid, throw an error
+  const address = await Address.findById(addressId);
 
-  if (addressName === user?.addresses[0]?.addressName) {
-    // Update the first address if the provided name matches the first address name
-    await updateAddress(user.addresses[0]._id, req.body);
-  } else if (addressName === user?.addresses[1]?.addressName) {
-    // Update the second address if the provided name matches the second address name
-    await updateAddress(user.addresses[1]._id, req.body);
+  if (address.userId.toString() !== userId) {
+    throw new ApiError(
+      401,
+      "Invalid request, cannot update other user's address"
+    );
   }
 
+  address.addressName = req.body.addressName || address.addressName;
+  address.addressLine1 = req.body.addressLine1 || address.addressLine1;
+  address.addressLine2 = req.body.addressLine2 || address.addressLine2;
+  address.city = req.body.city || address.city;
+  address.state = req.body.state || address.state;
+  address.postalCode = req.body.postalCode || address.postalCode;
+  address.phoneNumber = req.body.phoneNumber || address.phoneNumber;
+  address.companyName = req.body.companyName || address.companyName;
+  address.isDefaultDelivery =
+    req.body.isDefaultDelivery || address.isDefaultDelivery;
+  address.isDefaultBilling =
+    req.body.isDefaultBilling || address.isDefaultBilling;
+
+  await address.save();
+
+  // Creating HATEOAS links for the updated address
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/user/profile/address`,
+      method: "GET",
+      description: "Get Addresses",
+    },
+    {
+      rel: "delete",
+      href: `${host}/user/profile/address`,
+      method: "DELETE",
+      description: "Get Addresses",
+    },
+  ];
   return res
     .status(200)
     .json(
-      new ApiResponse(
-        200,
-        { addresses: user.addresses },
-        "Address update successfully."
-      )
+      new ApiResponse(200, { address, links }, "Address update successfully.")
     );
 });
 
