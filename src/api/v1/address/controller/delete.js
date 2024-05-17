@@ -3,6 +3,7 @@ const Address = require("../../../../models/Address.model/Address.model");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
+const { ApiVersion } = require("../../../../constants");
 
 const addressDeleteController = asyncHandler(async (req, res) => {
   // Destructuring addressId from request parameters
@@ -46,11 +47,28 @@ const addressDeleteController = asyncHandler(async (req, res) => {
 
   // Delete the address from database
   await Address.findByIdAndDelete(addressId);
+  const host = `${req.myHost}${ApiVersion}`;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/users/profile/address`,
+      method: "GET",
+      description: "Get Addresses",
+    },
+    {
+      rel: "create",
+      href: `${host}/users/profile/address`,
+      method: "POST",
+      description: "Create Addresses",
+    },
+  ];
 
   // Returning success response with deleted address
   return res
     .status(200)
-    .json(new ApiResponse(204, { user }, "Address delete successfully."));
+    .json(
+      new ApiResponse(204, { user, links }, "Address delete successfully.")
+    );
 });
 
 module.exports = addressDeleteController;
