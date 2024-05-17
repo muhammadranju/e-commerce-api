@@ -3,6 +3,7 @@ const Address = require("../../../../models/Address.model/Address.model");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
+const { ApiVersion } = require("../../../../constants");
 
 const createAddressController = asyncHandler(async (req, res) => {
   // Destructuring request body for address details
@@ -62,11 +63,34 @@ const createAddressController = asyncHandler(async (req, res) => {
       "You already Home and Office addresses added, No more addresses need."
     );
   }
+  const host = `${req.myHost}${ApiVersion}`;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/users/profile/address`,
+      method: "GET",
+      description: "Get Addresses",
+    },
+    {
+      rel: "update",
+      href: `${host}/users/profile/address`,
+      method: "PUT",
+      description: "Update Addresses",
+    },
+    {
+      rel: "delete",
+      href: `${host}/users/profile/address`,
+      method: "DELETE",
+      description: "Delete Addresses",
+    },
+  ];
 
   // Returning success response with the created address
   return res
     .status(201)
-    .json(new ApiResponse(201, { address }, "Address created successfully."));
+    .json(
+      new ApiResponse(201, { address, links }, "Address created successfully.")
+    );
 });
 
 module.exports = createAddressController;
