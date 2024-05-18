@@ -32,10 +32,41 @@ const createBrandController = asyncHandler(async (req, res) => {
   // Save the new brand to the database
   await brand.save();
 
+  const host = req.apiHost;
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/brands/${brand._id}`,
+      method: "GET",
+      description: "Get created brand details",
+    },
+    {
+      rel: "all_brands",
+      href: `${host}/brands`,
+      method: "GET",
+      description: "Get all brands",
+    },
+    {
+      rel: "update_brand",
+      href: `${host}/brands/${brand._id}`,
+      method: "PUT",
+      description: "Update brand details",
+    },
+    {
+      rel: "delete_brand",
+      href: `${host}/brands/${brand._id}`,
+      method: "DELETE",
+      description: "Delete brand",
+    },
+  ];
+
   // Send a success response with the created brand details
   return res
     .status(201)
-    .json(new ApiResponse(201, { brand }, "Brand Created successfully."));
+    .json(
+      new ApiResponse(201, { brand, links }, "Brand Created successfully.")
+    );
 });
 
 module.exports = createBrandController;
