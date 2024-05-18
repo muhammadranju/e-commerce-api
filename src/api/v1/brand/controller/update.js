@@ -3,7 +3,7 @@ const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 
-const brandUpdateController = asyncHandler(async (req, res, next) => {
+const brandUpdateController = asyncHandler(async (req, res) => {
   // Get brand URL from params
   const brandUrl = req.params?.brandId;
 
@@ -28,10 +28,33 @@ const brandUpdateController = asyncHandler(async (req, res, next) => {
   // Save the updated brand details to the database
   await brand.save();
 
+  const host = req.apiHost;
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/brands/${brandUrl}`,
+      method: "GET",
+      description: "Get details of this brand",
+    },
+    {
+      rel: "all_brands",
+      href: `${host}/brands`,
+      method: "GET",
+      description: "Get all brands",
+    },
+    {
+      rel: "delete_brand",
+      href: `${host}/brands/${brandUrl}`,
+      method: "DELETE",
+      description: "Delete this brand",
+    },
+  ];
   // Send the updated brand details in the response
   return res
     .status(201)
-    .json(new ApiResponse(201, { brand }, "Update brand successfully."));
+    .json(new ApiResponse(201, { brand, links }, "Update brand successfully."));
 });
 
 module.exports = brandUpdateController;
