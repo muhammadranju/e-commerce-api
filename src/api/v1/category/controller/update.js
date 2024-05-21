@@ -25,10 +25,31 @@ const categoriesUpdateController = asyncHandler(async (req, res) => {
 
   // then save the data in to the database
   await categories.save();
+
+  const host = req.apiHost;
+
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/categories/${categoryId}`,
+      method: "GET",
+      description: "Retrieve the updated category",
+    },
+    {
+      rel: "delete_category",
+      href: `${host}/categories/${categoryId}`,
+      method: "DELETE",
+      description: "Delete the updated category",
+    },
+  ];
   return res
     .status(200)
     .json([
-      new ApiResponse(200, { categories }, "Category update successfully."),
+      new ApiResponse(
+        200,
+        { categories, links },
+        "Category update successfully."
+      ),
     ]);
 });
 
