@@ -17,10 +17,33 @@ const categoriesDeleteController = asyncHandler(async (req, res) => {
 
   // then delete the category from the database
   await categories.deleteOne();
+
+  const host = req.apiHost;
+  // Create HATEOAS links for the response
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/categories`,
+      method: "GET",
+      description: "Retrieve all categories",
+    },
+    {
+      rel: "create_category",
+      href: `${host}/categories`,
+      method: "POST",
+      description: "Create a new category",
+    },
+  ];
+
+  // response after delete category
   return res
     .status(200)
     .json(
-      new ApiResponse(204, { categoryId }, "Category Delete successfully.")
+      new ApiResponse(
+        204,
+        { categoryId, links },
+        "Category Delete successfully."
+      )
     );
 });
 module.exports = categoriesDeleteController;
