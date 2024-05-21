@@ -23,10 +23,49 @@ const categoriesCreateController = asyncHandler(async (req, res) => {
   const categories = new Category({ name, description, image });
   await categories.save();
 
+  const host = req.apiHost;
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/categories`,
+      method: "GET",
+      description: "Retrieve all categories",
+    },
+    {
+      rel: "create_category",
+      href: `${host}/categories`,
+      method: "POST",
+      description: "Create a new category",
+    },
+    {
+      rel: "get_category",
+      href: `${host}/categories/${categories._id}`,
+      method: "GET",
+      description: "Retrieve the created category",
+    },
+    {
+      rel: "update_category",
+      href: `${host}/categories/${categories._id}`,
+      method: "PUT",
+      description: "Update the created category",
+    },
+    {
+      rel: "delete_category",
+      href: `${host}/categories/${categories._id}`,
+      method: "DELETE",
+      description: "Delete the created category",
+    },
+  ];
+
   return res
     .status(201)
     .json(
-      new ApiResponse(201, { categories }, "Category create successfully.")
+      new ApiResponse(
+        201,
+        { categories, links },
+        "Category create successfully."
+      )
     );
 });
 module.exports = categoriesCreateController;
