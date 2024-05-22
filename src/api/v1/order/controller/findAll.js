@@ -19,10 +19,24 @@ const findOrderController = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Orders not found for this user");
   }
 
+  const host = req.apiHost;
+
+  const links = {
+    create: {
+      href: `${host}/checkout/orders`,
+      method: "POST",
+    },
+    userOrders: {
+      href: `${host}/users/profile/orders`,
+      method: "GET",
+    },
+  };
   // Return the cart to the user (including populated product details)
   return res
     .status(200)
-    .json(new ApiResponse(200, orders, "Orders fetched successfully"));
+    .json(
+      new ApiResponse(200, { orders, links }, "Orders fetched successfully")
+    );
 });
 
 module.exports = findOrderController;
