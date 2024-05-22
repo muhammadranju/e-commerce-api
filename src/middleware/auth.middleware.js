@@ -1,8 +1,9 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/User.model/User.model");
 const Seller = require("../models/Seller.model/Seller.model");
-const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
 
+const config = require("../config/config");
 // Middleware function for user authentication
 const authMiddleware = async (req, res, next) => {
   try {
@@ -20,7 +21,7 @@ const authMiddleware = async (req, res, next) => {
     // token = token?.split(" ")[1] ?? token;
 
     // Verify JWT token and extract user ID
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decodedToken = jwt.verify(token, config.ACCESS_TOKEN_SECRET);
 
     // check user is valid or invalid
     if (!decodedToken) {
@@ -72,10 +73,7 @@ const sellerAuthMiddleware = async (req, res, next) => {
     // token = token?.split(" ")[1] ?? token;
 
     // Verify JWT token and extract seller ID
-    const decodedToken = jwt.verify(
-      token,
-      process.env.SELLER_ACCESS_TOKEN_SECRET
-    );
+    const decodedToken = jwt.verify(token, config.SELLER_ACCESS_TOKEN_SECRET);
 
     // check seller is valid or invalid
     if (!decodedToken) {

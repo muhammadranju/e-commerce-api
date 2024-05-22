@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
-
+const config = require("../config/config");
 // Middleware to check if the user is logged in
 const isLoginMiddleware = (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ const isLoginMiddleware = (req, res, next) => {
       req.headers?.authorization?.split(" ")[1] || req.cookies?.access_token;
 
     // Verify the token using jwt.verify method
-    const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const user = jwt.verify(token, config.ACCESS_TOKEN_SECRET);
 
     // Check if the user is logged in based on status property
     if (user?.status) {
