@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
-
+const config = require("../config/config");
 // Middleware to check if the user is logged in
 const isSellerLoginMiddleware = (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ const isSellerLoginMiddleware = (req, res, next) => {
       req.headers?.authorization?.split(" ")[1] || req.cookies?.seller_token;
 
     // Verify the token using jwt.verify method
-    const seller = jwt.verify(token, process.env.SELLER_ACCESS_TOKEN_SECRET);
+    const seller = jwt.verify(token, config.SELLER_ACCESS_TOKEN_SECRET);
     // Check if the seller is logged in based on status property
 
     if (seller?.status) {
