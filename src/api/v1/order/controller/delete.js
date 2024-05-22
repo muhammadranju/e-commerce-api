@@ -43,13 +43,33 @@ const deleteOrderController = asyncHandler(async (req, res) => {
   // Delete the order from the database
   await order.deleteOne();
 
+  const host = req.apiHost;
+
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/checkout/orders/${orderId}`,
+      method: "GET",
+    },
+    {
+      rel: "create",
+      href: `${host}/checkout/orders`,
+      method: "POST",
+    },
+    {
+      rel: "user-orders",
+      href: `${host}/users/profile/orders`,
+      method: "GET",
+    },
+  ];
+
   // Return the response indicating successful deletion
   return res
     .status(200)
     .json(
       new ApiResponse(
         204,
-        { deleted: "204 No Content", orderId: order._id },
+        { deleted: "204 No Content", orderId: order._id, links },
         "Order deleted successfully"
       )
     );
