@@ -21,10 +21,44 @@ const reviewsCreateController = asyncHandler(async (req, res, next) => {
     });
 
     // then save the data in to database
+    await comment.save();
 
+    const host = req.apiHost;
+    const links = [
+      {
+        rel: "self",
+        href: `${host}/products/${comment._id}`,
+        method: "GET",
+        description: "Retrieve the created comment",
+      },
+      {
+        rel: "update_review",
+        href: `${host}/products/${comment._id}`,
+        method: "PUT",
+        description: "Update the created comment",
+      },
+      {
+        rel: "delete_review",
+        href: `${host}/products/${comment._id}`,
+        method: "DELETE",
+        description: "Delete the created comment",
+      },
+      {
+        rel: "product_reviews",
+        href: `${host}/products/${comment.product}/reviews`,
+        method: "GET",
+        description: "Get all reviews for the product",
+      },
+    ];
     return res
       .status(201)
-      .json(new ApiResponse(201, { comment }, "Comment created successfully."));
+      .json(
+        new ApiResponse(
+          201,
+          { comment, links },
+          "Comment created successfully."
+        )
+      );
   } catch (error) {
     next(error);
   }
