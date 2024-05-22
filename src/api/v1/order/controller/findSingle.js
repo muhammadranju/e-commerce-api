@@ -43,10 +43,41 @@ const findSingleOrderController = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Order not found");
   }
 
+  const host = req.apiHost;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/checkout/orders`,
+      method: "GET",
+    },
+    {
+      rel: "create",
+      href: `${host}/checkout/orders`,
+      method: "POST",
+    },
+    {
+      rel: "update",
+      href: `${host}/checkout/orders`,
+      method: "PUT",
+    },
+    {
+      rel: "delete",
+      href: `${host}/checkout/orders`,
+      method: "DELETE",
+    },
+    {
+      rel: "all-orders",
+      href: `${host}/checkout/orders`,
+      method: "GET",
+    },
+  ];
+
   // Return the retrieved order in the response
   return res
     .status(200)
-    .json(new ApiResponse(200, order, "Order retrieved successfully"));
+    .json(
+      new ApiResponse(200, { order, links }, "Order retrieved successfully")
+    );
 });
 
 module.exports = findSingleOrderController;
