@@ -62,10 +62,37 @@ const createOrderController = asyncHandler(async (req, res) => {
   await user.save();
   await order.save();
 
+  const host = req.apiHost;
+
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/checkout/orders/${order._id}`,
+      method: "GET",
+    },
+    {
+      rel: "update",
+      href: `${host}/checkout/orders/${order._id}`,
+      method: "PUT",
+    },
+    {
+      rel: "delete",
+      href: `${host}/checkout/orders/${order._id}`,
+      method: "DELETE",
+    },
+    {
+      rel: "user-orders",
+      href: `${host}/users/profile/orders`,
+      method: "GET",
+    },
+  ];
+
   // Respond with success status and the created order
   return res
     .status(201)
-    .json(new ApiResponse(201, { order }, "Order created successfully."));
+    .json(
+      new ApiResponse(201, { order, links }, "Order created successfully.")
+    );
 });
 
 module.exports = createOrderController;
