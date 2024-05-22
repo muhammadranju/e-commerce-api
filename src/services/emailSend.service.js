@@ -1,6 +1,8 @@
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 
+const config = require("../config/config");
+
 // const transporter = nodemailer.createTransport({
 //   service: "gmail",
 //   port: 465,
@@ -13,12 +15,12 @@ const Mailgen = require("mailgen");
 
 // Initialize nodemailer transporter
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVICE, // host for mailtrap
-  port: process.env.EMAIL_PORT,
+  host: config.EMAIL_SERVICE, // host for mailtrap
+  port: config.EMAIL_PORT,
   // secure: true,
   auth: {
-    user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD,
+    user: config.EMAIL_USERNAME,
+    pass: config.EMAIL_PASSWORD,
   },
 });
 
