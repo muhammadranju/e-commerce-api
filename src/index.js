@@ -3,6 +3,7 @@ const app = require("./app");
 const http = require("http");
 const databaseConnection = require("./db/databaseConnection");
 const config = require("./config/config");
+const ApiError = require("./utils/ApiError");
 
 const PORT = config.PORT || 3030;
 const server = http.createServer(app);
@@ -21,6 +22,7 @@ const startServer = async () => {
     console.error("Error starting the server:");
     console.error(error.message);
     console.error(error);
+    throw new ApiError(500, "Error starting server");
   }
 };
 
