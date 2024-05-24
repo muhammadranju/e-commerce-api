@@ -195,10 +195,10 @@ const productSchema = new Schema(
       ref: ModelRefNames.Brand,
       required: true,
     },
-    comments: [
+    reviews: [
       {
         type: Schema.Types.ObjectId,
-        ref: ModelRefNames.Comment,
+        ref: ModelRefNames.Reviews,
       },
     ],
   },
