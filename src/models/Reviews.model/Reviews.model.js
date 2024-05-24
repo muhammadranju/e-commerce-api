@@ -10,7 +10,7 @@ const commentSchema = new Schema(
       maxLength: 500,
     },
     // Author of the comment
-    author: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: ModelRefNames.User, // Reference to the User model
       required: true,
@@ -23,6 +23,11 @@ const commentSchema = new Schema(
     },
     // Rating associated with the comment (optional)
     rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+    },
+    serviceRating: {
       type: Number,
       min: 1,
       max: 5,
@@ -40,5 +45,5 @@ commentSchema.pre("save", (next) => {
   }
   next();
 });
-const Comment = model(ModelRefNames.Comment, commentSchema);
-module.exports = Comment;
+const Reviews = model(ModelRefNames.Reviews, commentSchema);
+module.exports = Reviews;
