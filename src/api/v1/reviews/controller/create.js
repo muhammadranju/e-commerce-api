@@ -1,29 +1,64 @@
-const Comment = require("../../../../models/Comment.model/Comment.model");
-const ApiError = require("../../../../utils/ApiError");
-const ApiResponse = require("../../../../utils/ApiResponse");
-const asyncHandler = require("../../../../utils/asyncHandler");
-
+const mongoose = require("mongoose");
+const Comment = require("../../../../models/Reviews.model/Reviews.model.js");
+const ApiError = require("../../../../utils/ApiError.js");
+const ApiResponse = require("../../../../utils/ApiResponse.js");
+const asyncHandler = require("../../../../utils/asyncHandler.js");
+const Product = require("../../../../models/Products.model/Products.model.js");
+const StoreComments = require("../../../../models/Reviews.model/StoreReviews.js");
 const reviewsCreateController = asyncHandler(async (req, res, next) => {
   try {
     // get all data from req,body or frontend (content, author, product, rating)
-    const { content, product, rating } = req.body;
+    const { content, products: productId, rating } = req.body;
+    const userId = req.user?.userId;
 
     // check data is valid or not
-    if ((!content, !product, !rating)) {
+    if ((!content, !productId, !rating)) {
       throw new ApiError(400, "All fields are required.");
     }
+
+    // Check if productId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw new ApiError(
+        400,
+        "Invalid product id. Please provide a valid product id."
+      );
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      throw new ApiError(404, "Product not found");
+    }
+
+    let findStoreComment = await StoreComments.findOne({
+      productId,
+    });
+
     // if all data is valid then create a new Object model for database
     const comment = new Comment({
       content,
-      product,
+      products: product._id,
       rating,
-      author: req.user.userId,
+      author: userId,
     });
 
-    // then save the data in to database
-    await comment.save();
+    if (!findStoreComment) {
+      findStoreComment = new StoreComments({
+        productId: product._id,
+        comments: [],
+      });
+    }
 
+    findStoreComment.comments.push(comment._id);
+    // then save the data in to database
+    product.comments = findStoreComment._id;
+    await findStoreComment.save();
+    await comment.save();
+    await product.save();
+
+    // get the host from req.apiHost
     const host = req.apiHost;
+    // create HATEOAS links for the response
     const links = [
       {
         rel: "self",

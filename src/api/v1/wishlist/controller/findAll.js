@@ -14,9 +14,42 @@ const getWishlistsController = asyncHandler(async (req, res) => {
   if (!wishlist.products.length) {
     throw new ApiError(404, "Wishlist not found for this user");
   }
+
+  const host = req.apiHost;
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/wishlists`,
+      method: "GET",
+      description: "Get details of the user's wishlist",
+    },
+    {
+      rel: "add-item",
+      href: `${host}/wishlists`,
+      method: "POST",
+      description: "Add a new item to the wishlist",
+    },
+    {
+      rel: "delete-item",
+      href: `${host}/wishlists`,
+      method: "DELETE",
+      description: "Delete an item from the wishlist",
+    },
+    {
+      rel: "user-profile",
+      href: `${host}/users/profile`,
+      method: "GET",
+      description: "View user profile",
+    },
+  ];
+
   return res
     .status(200)
-    .json(new ApiResponse(200, wishlist, "Wishlist fetched successfully"));
+    .json(
+      new ApiResponse(200, { wishlist, links }, "Wishlist fetched successfully")
+    );
 });
 
 module.exports = getWishlistsController;

@@ -195,12 +195,10 @@ const productSchema = new Schema(
       ref: ModelRefNames.Brand,
       required: true,
     },
-    comments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: ModelRefNames.Comment,
-      },
-    ],
+    comments: {
+      type: Schema.Types.ObjectId,
+      ref: ModelRefNames.Comment,
+    },
   },
   { timestamps: true }
 );
