@@ -35,43 +35,9 @@ const deleteWishlistController = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Error removing product from wishlist");
   }
 
-  const host = req.apiHost;
-  // HATEOAS links
-  const links = [
-    {
-      rel: "self",
-      href: `${host}/wishlists`,
-      method: "GET",
-      description: "Get details of the updated wishlist",
-    },
-    {
-      rel: "add-item",
-      href: `${host}/wishlists`,
-      method: "POST",
-      description: "Add a new item to the wishlist",
-    },
-    {
-      rel: "user-profile",
-      href: `${host}/users/profile`,
-      method: "GET",
-      description: "View user profile",
-    },
-    {
-      rel: "product-details",
-      href: `${host}/products/${productId}`,
-      method: "GET",
-      description: "View details of the removed product",
-    },
-  ];
   return res
     .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { updatedWishlist, links },
-        "Item removed from wishlist"
-      )
-    );
+    .json(new ApiResponse(200, updatedWishlist, "Item removed from wishlist"));
 });
 
 module.exports = deleteWishlistController;
