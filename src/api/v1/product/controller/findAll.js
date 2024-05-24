@@ -71,6 +71,63 @@ const findProduct = asyncHandler(async (req, res) => {
     .limit(size)
     .skip(skip)
     .sort(sort);
+  const productCounts = products.length;
+
+  const host = req.apiHost;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/products?search=${search}&size=${size}&page=${page}&sort=${sort}`,
+      method: "GET",
+    },
+    {
+      rel: "create",
+      href: `${host}/products`,
+      method: "POST",
+    },
+    {
+      rel: "first-page",
+      href: `${host}/products?search=${search}&size=${size}&page=1&sort=${sort}`,
+      method: "GET",
+    },
+    {
+      rel: "previous-page",
+      href: `${host}/products?search=${search}&size=${size}&page=${Math.max(
+        page - 1,
+        1
+      )}&sort=${sort}`,
+      method: "GET",
+    },
+    {
+      rel: "next-page",
+      href: `${host}/products?search=${search}&size=${size}&page=${
+        page + 1
+      }&sort=${sort}`,
+      method: "GET",
+    },
+    {
+      rel: "last-page",
+      href: `${host}/products?search=${search}&size=${size}&page=${Math.ceil(
+        productCounts / size
+      )}&sort=${sort}`,
+      method: "GET",
+    },
+    {
+      rel: "product-details",
+      href: `${host}/products/{productId}`,
+      method: "GET",
+    },
+    {
+      rel: "update-product",
+      href: `${host}/products/{productId}`,
+      method: "PUT",
+    },
+    {
+      rel: "delete-product",
+      href: `${host}/products/{productId}`,
+      method: "DELETE",
+    },
+  ];
 
   // Return response with search results
   return res
@@ -78,7 +135,7 @@ const findProduct = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { productCounts: products.length, products },
+        { productCounts, products, links },
         `Products matching '${searchBody}' found successfully`
       )
     );
