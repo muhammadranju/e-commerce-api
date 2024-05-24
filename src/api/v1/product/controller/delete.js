@@ -26,9 +26,40 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
   await Product.deleteOne();
 
+  const host = req.apiHost;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/products/${productId}`,
+      method: "GET",
+    },
+    {
+      rel: "create",
+      href: `${host}/products`,
+      method: "POST",
+    },
+    {
+      rel: "update",
+      href: `${host}/products/${productId}`,
+      method: "PUT",
+    },
+    {
+      rel: "delete",
+      href: `${host}/products/${productId}`,
+      method: "DELETE",
+    },
+    {
+      rel: "list",
+      href: `${host}/products`,
+      method: "GET",
+    },
+  ];
+
   // Return a success response with the deleted product.
   return res
     .status(200)
-    .json(new ApiResponse(200, product, "Product deleted successfully"));
+    .json(
+      new ApiResponse(200, { product, links }, "Product deleted successfully")
+    );
 });
 module.exports = deleteProduct;
