@@ -59,9 +59,34 @@ const updateController = asyncHandler(async (req, res) => {
   // save data in to user database
   await user.save({ validateBeforeSave: false });
 
+  // HATEOAS links
+  const host = req.apiHost;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/users`,
+      method: "PATCH",
+      description: "Update user details",
+    },
+    {
+      rel: "profile",
+      href: `${host}/users/profile`,
+      method: "GET",
+      description: "View user profile",
+    },
+    {
+      rel: "logout",
+      href: `${host}/users/logout`,
+      method: "POST",
+      description: "Log out user",
+    },
+  ];
+
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User data update successfully."));
+    .json(
+      new ApiResponse(200, { user, links }, "User data update successfully.")
+    );
 });
 
 module.exports = updateController;
