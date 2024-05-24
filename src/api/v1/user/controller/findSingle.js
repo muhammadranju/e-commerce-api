@@ -17,35 +17,36 @@ const getController = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
+  const host = req.apiHost;
   // HATEOAS links
   const links = [
     {
       rel: "update_profile",
-      href: "/users/profile",
+      href: `${host}/users/profile`,
       method: "PUT",
       description: "Update Profile",
     },
     {
       rel: "view_addresses",
-      href: "/user/profile/address",
+      href: `${host}/users/profile/address`,
       method: "GET",
       description: "View Addresses",
     },
     {
       rel: "view_wishlists",
-      href: "/wishlists",
+      href: `${host}/wishlists`,
       method: "GET",
       description: "View Wishlists",
     },
     {
       rel: "view_orders",
-      href: "/orders",
+      href: `${host}/orders`,
       method: "GET",
       description: "View Orders",
     },
     {
       rel: "view_cart",
-      href: "/cart",
+      href: `${host}/carts`,
       method: "GET",
       description: "View Cart",
     },
