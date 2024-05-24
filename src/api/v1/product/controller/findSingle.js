@@ -24,15 +24,44 @@ const findSingle = asyncHandler(async (req, res) => {
   // Find the product in the database using the productId or SKU
   const product = await Product.findOne({
     $or: [{ slug: productId }, { SKU: productId }],
-  });
+  }).populate("comments");
 
   // Check if the product is found in the database
   if (!product) {
     throw new ApiError(404, "Product not found");
   }
 
+  const host = req.apiHost;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/products/${productId}`,
+      method: "GET",
+    },
+    {
+      rel: "create",
+      href: `${host}/products`,
+      method: "POST",
+    },
+    {
+      rel: "update",
+      href: `${host}/products/${productId}`,
+      method: "PUT",
+    },
+    {
+      rel: "delete",
+      href: `${host}/products/${productId}`,
+      method: "DELETE",
+    },
+    {
+      rel: "list",
+      href: `${host}/products`,
+      method: "GET",
+    },
+  ];
+
   // Return the product as a JSON response with a 200 status code (OK) and a success message
-  return res.json(new ApiResponse(200, product, "Product found"));
+  return res.json(new ApiResponse(200, { product, links }, "Product found"));
 });
 
 module.exports = findSingle;
