@@ -69,17 +69,18 @@ const createAddTOCartController = asyncHandler(async (req, res) => {
   // Save the updated cart
   await cart.save();
 
+  const host = req.apiHost;
   // HATEOAS links
   const links = [
     {
       rel: "view_cart",
-      href: `/carts`,
+      href: `${host}/carts`,
       method: "GET",
       description: "View Cart",
     },
     {
       rel: "checkout",
-      href: `/checkout/orders`,
+      href: `${host}/checkout/orders`,
       method: "GET",
       description: "Checkout",
     },
