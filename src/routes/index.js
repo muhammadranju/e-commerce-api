@@ -15,7 +15,7 @@ const paymentRoutes = require("./payment.route/payment.routes");
 const categoriesRoutes = require("./category.routes/category.routes");
 const brandRoutes = require("./brand.routes/brand.routes");
 
-const commentsRoutes = require("./comment.routes/comment.routes");
+const reviewsRoutes = require("./reviews.routes/reviews.routes");
 const wishlistRoutes = require("./wishlists.routes/wishlists.routes");
 
 // import seller routers
@@ -26,7 +26,7 @@ router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
 );
 
-router.use("/users", [userRoutes, addressRoutes]);
+router.use("/users", [userRoutes, reviewsRoutes, addressRoutes]);
 router.use("/auth", authRoutes);
 router.use("/carts", cartsRoutes);
 router.use("/checkout", ordersRoutes);
@@ -34,7 +34,7 @@ router.use("/payment", paymentRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/brands", brandRoutes);
 router.use("/wishlists", wishlistRoutes);
-router.use("/products", [productRoutes, commentsRoutes]);
+router.use("/products", productRoutes);
 // defined a seller routers
 router.use("/seller", [sellerRoutes, storeRoutes]);
 
