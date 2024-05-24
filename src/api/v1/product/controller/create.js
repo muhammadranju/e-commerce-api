@@ -1,4 +1,3 @@
-const { baseURI } = require("../../../../constants");
 const Product = require("../../../../models/Products.model/Products.model");
 const Seller = require("../../../../models/Seller.model/Seller.model");
 const Store = require("../../../../models/Store.model/Store.model");
@@ -129,16 +128,43 @@ const productCreateController = asyncHandler(async (req, res) => {
   // Save the product to the database
   await product.save();
 
+  const host = req.apiHost;
+
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/products/${product?.slug}`,
+      method: "GET",
+    },
+    {
+      rel: "create",
+      href: `${host}/products`,
+      method: "POST",
+    },
+    {
+      rel: "update",
+      href: `${host}/products/${product?.slug}`,
+      method: "PUT",
+    },
+    {
+      rel: "delete",
+      href: `${host}/products/${product?.slug}`,
+      method: "DELETE",
+    },
+    {
+      rel: "all-products",
+      href: `${host}/products`,
+      method: "GET",
+    },
+  ];
+
   // Return the response with the created product and relevant links
   return res.status(201).json(
     new ApiResponse(
       201,
       {
         product,
-        links: {
-          self: `${baseURI}/product/${product?.slug}`,
-          next: `${baseURI}/products`,
-        },
+        links,
       },
       "Product created successfully"
     )
