@@ -35,12 +35,35 @@ const changePasswordController = asyncHandler(async (req, res) => {
   user.password = newPassword;
   await user.save(); // save to database
 
+  const host = req.apiHost;
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/users/change-password`,
+      method: "POST",
+      description: "Change Password",
+    },
+    {
+      rel: "profile",
+      href: `${host}/users/profile}`,
+      method: "GET",
+      description: "View Profile",
+    },
+    {
+      rel: "logout",
+      href: `${host}/users/logout`,
+      method: "POST",
+      description: "Logout",
+    },
+  ];
+
   return res
     .status(200)
     .json(
       new ApiResponse(
         203,
-        { yourEmail: user.email },
+        { yourEmail: user.email, links },
         "Password was change successfully."
       )
     );
