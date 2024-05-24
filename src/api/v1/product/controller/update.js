@@ -79,9 +79,40 @@ const updateProduct = asyncHandler(async (req, res) => {
     });
   }
 
-  console.log(product);
+  const host = req.apiHost;
+
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/products/${productId}`,
+      method: "GET",
+    },
+    {
+      rel: "create",
+      href: `${host}/products`,
+      method: "POST",
+    },
+    {
+      rel: "update",
+      href: `${host}/products/${productId}`,
+      method: "PUT",
+    },
+    {
+      rel: "delete",
+      href: `${host}/products/${productId}`,
+      method: "DELETE",
+    },
+    {
+      rel: "list",
+      href: `${host}/products`,
+      method: "GET",
+    },
+  ];
+
   return res
     .status(200)
-    .json(new ApiResponse(200, { product }, "Product updated successfully"));
+    .json(
+      new ApiResponse(200, { product, links }, "Product updated successfully")
+    );
 });
 module.exports = updateProduct;
