@@ -45,16 +45,35 @@ const createWishlistController = asyncHandler(async (req, res) => {
   await wishlist.save();
   await user.save({ validateBeforeSave: false });
 
+  const host = req.apiHost;
   // HATEOAS links
   const links = [
     {
-      rel: "view_wishlist",
-      href: `/wishlists`,
+      rel: "self",
+      href: `${host}/wishlists`,
       method: "GET",
-      description: "View Wishlist",
+      description: "Get details of the created wishlist item",
     },
-    // Add more links as needed
+    {
+      rel: "delete",
+      href: `${host}/wishlists`,
+      method: "DELETE",
+      description: "Remove item from wishlist",
+    },
+    {
+      rel: "user-profile",
+      href: `${host}/users/profile`,
+      method: "GET",
+      description: "View user profile",
+    },
+    {
+      rel: "product-details",
+      href: `${host}/products/${productId}`,
+      method: "GET",
+      description: "View details of the product added to wishlist",
+    },
   ];
+
   // Return success response
   return res
     .status(201)
