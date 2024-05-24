@@ -24,7 +24,7 @@ const findSingle = asyncHandler(async (req, res) => {
   // Find the product in the database using the productId or SKU
   const product = await Product.findOne({
     $or: [{ slug: productId }, { SKU: productId }],
-  }).populate("comments");
+  }).populate("reviews", "content rating");
 
   // Check if the product is found in the database
   if (!product) {
