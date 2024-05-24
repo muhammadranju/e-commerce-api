@@ -101,13 +101,13 @@ const UserLoginType = {
 const AvailableSocialLogins = Object.values(UserLoginType);
 
 /**
- * @type {{ User:"User"; Product:"Product"; Comment:"Comment"; Order:"Order"; Seller:"Seller";  Store: "Store"; Payment:"Payment"; Category:"Category"; Cart:"Cart"; Wishlist:"Wishlist"; Brand:"Brand"; Address:"Address"; OrdersItem:"OrdersItem";} as const}
+ * @type {{ User:"User"; Product:"Product"; Reviews:"Reviews"; Order:"Order"; Seller:"Seller";  Store: "Store"; Payment:"Payment"; Category:"Category"; Cart:"Cart"; Wishlist:"Wishlist"; Brand:"Brand"; Address:"Address"; OrdersItem:"OrdersItem";} as const}
  */
 // Model References
 const ModelRefNames = {
   User: "User",
   Product: "Product",
-  Comment: "Comment",
+  Reviews: "Reviews",
   Order: "Order",
   Seller: "Seller",
   Store: "Store",
