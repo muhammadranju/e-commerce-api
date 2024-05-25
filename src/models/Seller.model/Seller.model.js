@@ -19,10 +19,10 @@ const sellerSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    ShopId: {
+    shopId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: ModelRefNames.Store,
-      required: true,
+      // required: true,
     },
     email: {
       type: String,
