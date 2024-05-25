@@ -60,6 +60,8 @@ const createStore = asyncHandler(async (req, res) => {
   });
 
   // Save the store to the database
+  isSeller.shopId = store._id;
+  await isSeller.save({ validateBeforeSave: true });
   await store.save();
 
   // Return a JSON response with the created store
