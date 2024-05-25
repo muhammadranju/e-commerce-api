@@ -6,6 +6,7 @@ const asyncHandler = require("../../../../../utils/asyncHandler");
 const update = asyncHandler(async (req, res) => {
   const { storeName, storeDescription, logo, banner, storeAddress } = req.body;
   const { storeId } = req.params;
+  const sellerId = req.seller?.sellerId;
 
   const findStore = await Store.findOne({
     $or: [{ storeUID: storeId }, { storeURI: storeId }],
@@ -13,6 +14,11 @@ const update = asyncHandler(async (req, res) => {
 
   if (!findStore) {
     throw new ApiError(404, "Store not found");
+  }
+
+  // Check if the user is authorized to update the review
+  if (findStore.sellerId.toString() !== sellerId) {
+    throw new ApiError(401, "You are not authorized to update this Store.");
   }
 
   // Check if all required fields are present in the request body
