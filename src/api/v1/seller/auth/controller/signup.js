@@ -1,8 +1,5 @@
 // seller signup post controller
-const slugify = require("slugify");
-const randomstring = require("randomstring");
 const emailValidator = require("email-validator");
-const { v4: uuidv4 } = require("uuid");
 const ApiError = require("../../../../../utils/ApiError");
 const asyncHandler = require("../../../../../utils/asyncHandler");
 const Seller = require("../../../../../models/Seller.model/Seller.model");
@@ -37,33 +34,15 @@ const signupController = asyncHandler(async (req, res) => {
   // If the email does not exist and all data is valid:
   // - Save all the received data into the database
 
-  const {
-    name,
-    email,
-    password,
-    shopName,
-    shopDescription,
-    phoneNumber,
-    shopAddress,
-  } = req.body;
+  const { name, email, password, phoneNumber } = req.body;
 
-  if (
-    !name ||
-    !email ||
-    !password ||
-    !shopName ||
-    !shopDescription ||
-    !phoneNumber ||
-    !shopAddress
-  ) {
+  if (!name || !email || !password || !phoneNumber) {
     throw new ApiError(400, "All fields are required.");
   }
 
   if (password.length < 8) {
     throw new ApiError(400, "Password minimum 8 characters.");
   }
-
-  const shopUrlLink = `${slugify(shopName)}${randomstring.generate(12)}`;
 
   function validateEmail(email) {
     return emailValidator.validate(email) && customEmailValidator(email);
@@ -83,14 +62,9 @@ const signupController = asyncHandler(async (req, res) => {
 
   const seller = new Seller({
     name,
-    sellerUID: uuidv4(),
     email,
     password,
-    shopName,
-    shopUrlLink,
-    shopDescription,
     phoneNumber,
-    shopAddress,
   });
 
   const { unHashedToken, hashedToken, tokenExpiry } =
