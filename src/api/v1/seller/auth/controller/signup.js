@@ -81,15 +81,43 @@ const signupController = asyncHandler(async (req, res) => {
     subject: "Please verify your email",
     mailgenContent: emailVerificationMailgenContent(
       `${seller?.name}`,
-      `${req.protocol}://${req.get(
-        "host"
-      )}${ApiVersion}/seller/auth/verify-email/${unHashedToken}`
+      `${req.myHost}${ApiVersion}/seller/auth/verify-email/${unHashedToken}`
     ),
   });
 
+  const host = req.apiHost;
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/seller/auth/register`,
+      method: "POST",
+      description: "Create a new seller account",
+    },
+    {
+      rel: "login",
+      href: `${host}/seller/auth/login`,
+      method: "POST",
+      description: "Login to your seller account",
+    },
+    {
+      rel: "forgot-password",
+      href: `${host}/seller/auth/forgot-password`,
+      method: "POST",
+      description: "Forgot password - Reset your password",
+    },
+  ];
+
   return res
     .status(201)
-    .json(new ApiResponse(201, seller, "Seller account created successfully."));
+    .json(
+      new ApiResponse(
+        201,
+        { seller, links },
+        "Seller account created successfully."
+      )
+    );
 });
 
 module.exports = signupController;
