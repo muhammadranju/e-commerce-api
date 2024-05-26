@@ -45,9 +45,7 @@ const loginController = asyncHandler(async (req, res) => {
       subject: "Email Verification Reminder",
       mailgenContent: emailVerificationMailgenContent(
         `${seller?.name}`,
-        `${req.protocol}://${req.get(
-          "host"
-        )}${ApiVersion}/seller/auth/verify-email/${unHashedToken}`
+        `${req.myHost}${ApiVersion}/seller/auth/verify-email/${unHashedToken}`
       ),
     });
     return res
@@ -81,13 +79,39 @@ const loginController = asyncHandler(async (req, res) => {
     sameSite: "none",
   });
 
-  // Return the response
-  // This response could include a success message or any relevant data indicating a successful login
+  const host = req.apiHost;
 
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/seller/auth/login`,
+      method: "POST",
+      description: "Login to your seller account",
+    },
+    {
+      rel: "register",
+      href: `${host}/seller/auth/register`,
+      method: "POST",
+      description: "Register a new seller account",
+    },
+    {
+      rel: "forgot-password",
+      href: `${host}/seller/auth/forgot-password`,
+      method: "POST",
+      description: "Forgot password - Reset your password",
+    },
+  ];
+
+  // This response could include a success message or any relevant data indicating a successful login
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { token }, "Seller logging in account successfully.")
+      new ApiResponse(
+        200,
+        { token, links },
+        "Seller logging in account successfully."
+      )
     );
 });
 
