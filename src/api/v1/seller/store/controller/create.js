@@ -64,11 +64,46 @@ const createStore = asyncHandler(async (req, res) => {
   await isSeller.save({ validateBeforeSave: true });
   await store.save();
 
+  const host = req.apiHost;
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/store/${store.storeURI}`,
+      method: "GET",
+      description: "Get details of the created store",
+    },
+    {
+      rel: "update-store",
+      href: [
+        `${host}/seller/store/${store.storeURI}`,
+        `${host}/seller/store/${store.storeUID}`,
+      ],
+
+      method: "PUT",
+      description: "Update this store",
+    },
+    {
+      rel: "delete-store",
+      href: [
+        `${host}/seller/stores/${store.storeURI}`,
+        `${host}/seller/stores/${store.storeUID}`,
+      ],
+      method: "DELETE",
+      description: "Delete this store",
+    },
+  ];
+
   // Return a JSON response with the created store
   return res
     .status(201)
     .json(
-      new ApiResponse(201, { content: store }, "Store created successfully")
+      new ApiResponse(
+        201,
+        { content: store, links },
+        "Store created successfully"
+      )
     );
 });
 
