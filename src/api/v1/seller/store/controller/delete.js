@@ -20,10 +20,24 @@ const deleteShop = asyncHandler(async (req, res) => {
   // Delete the store from the database
   await findStore.deleteOne();
 
+  const host = req.apiHost;
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "create-shop",
+      href: `${host}/seller/stores`,
+      method: "POST",
+      description: "Create a new shop",
+    },
+  ];
+
   // Return the store as a JSON response with a 200 status code (OK) and a success message
   return res
     .status(200)
-    .json(new ApiResponse(204, findStore, "Store deleted successfully"));
+    .json(
+      new ApiResponse(204, { findStore, links }, "Store deleted successfully")
+    );
 });
 
 module.exports = deleteShop;
