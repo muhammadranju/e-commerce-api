@@ -41,12 +41,39 @@ const update = asyncHandler(async (req, res) => {
   findStore.storeAddress.postalCode =
     storeAddress?.postalCode || findStore.storeAddress.postalCode;
 
-  //   await findStore.save();
+  await findStore.save();
 
-  console.log(findStore);
+  const host = req.apiHost;
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: [
+        `${host}/seller/stores/${findStore.storeURI}`,
+        `${host}/seller/stores/${findStore.storeUID}`,
+      ],
+      method: "GET",
+      description: "Get details of the deleted store",
+    },
+    {
+      rel: "create-store",
+      href: `${host}/seller/stores`,
+      method: "POST",
+      description: "Create a new store",
+    },
+    // {
+    //   rel: "list-stores",
+    //   href: `${host}/seller/stores`,
+    //   method: "GET",
+    //   description: "List all stores",
+    // },
+  ];
+
   return res
     .status(200)
-    .json(new ApiResponse(200, findStore, "Store updated successfully"));
+    .json(
+      new ApiResponse(200, { findStore, links }, "Store updated successfully")
+    );
 });
 
 module.exports = update;
