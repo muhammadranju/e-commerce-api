@@ -1,4 +1,3 @@
-const { baseURI } = require("../../../../../constants");
 const Seller = require("../../../../../models/Seller.model/Seller.model");
 const ApiError = require("../../../../../utils/ApiError");
 const ApiResponse = require("../../../../../utils/ApiResponse");
@@ -21,16 +20,36 @@ const profileCreateController = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Your account is not verified yet.");
   }
 
+  const host = req.apiHost;
+  // Construct HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/seller/profile`,
+      method: "GET",
+      description: "Retrieve your profile information",
+    },
+    {
+      rel: "update",
+      href: `${host}/seller/profile`,
+      method: "PUT",
+      description: "Update your profile information",
+    },
+    {
+      rel: "delete",
+      href: `${host}/seller/profile`,
+      method: "DELETE",
+      description: "Delete your profile",
+    },
+  ];
+
   // Return the seller's profile in the response
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        links: {
-          self: `${baseURI}/seller/profile`,
-          next: `${baseURI}/seller/profile/${sellerId}`,
-        },
         seller,
+        links,
       },
       "Successfully retrieved your account."
     )
