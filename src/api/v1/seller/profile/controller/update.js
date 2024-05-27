@@ -1,4 +1,3 @@
-const { URI } = require("../../../../../constants");
 const Seller = require("../../../../../models/Seller.model/Seller.model");
 const ApiError = require("../../../../../utils/ApiError");
 const ApiResponse = require("../../../../../utils/ApiResponse");
@@ -47,16 +46,34 @@ const profileUpdateController = asyncHandler(async (req, res) => {
   // Save the updated seller data to the database
   await seller.save({ validateBeforeSave: false });
 
+  const host = req.apiHost;
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/seller/profile/${seller._id}`,
+      method: "GET",
+      description: "Retrieve your profile information",
+    },
+    {
+      rel: "update",
+      href: `${host}/seller/profile/${seller._id}`,
+      method: "PUT",
+      description: "Update your profile information",
+    },
+    {
+      rel: "delete",
+      href: `${host}/seller/profile/${seller._id}`,
+      method: "DELETE",
+      description: "Delete your profile",
+    },
+  ];
   // Return a success response with the updated seller data
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        links: {
-          self: `${URI}/seller/profile`,
-          next: `${URI}/seller/profile/${seller._id}`,
-        },
         seller,
+        links,
       },
       "Profile updated successfully"
     )
