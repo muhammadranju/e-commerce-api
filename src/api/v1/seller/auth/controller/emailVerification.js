@@ -42,12 +42,29 @@ const emailVerificationController = asyncHandler(async (req, res) => {
   // - Update the seller's email verification status to "verified" in the database
   // - This action marks the seller's email as verified, enabling access to additional features
   await seller.save({ validateBeforeSave: false });
+
+  const host = req.apiHost;
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "login",
+      href: `${host}/seller/auth/login`,
+      method: "POST",
+      description: "Login seller",
+    },
+  ];
+
   // Return a response indicating the successful email verification
   // This response informs the seller that their email has been successfully verified and they can proceed with using the platform
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { message: true }, "Successfully email verified.✅")
+      new ApiResponse(
+        200,
+        { message: true, links },
+        "Successfully email verified.✅"
+      )
     );
 });
 
