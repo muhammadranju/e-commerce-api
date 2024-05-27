@@ -41,10 +41,10 @@ const authMiddleware = async (req, res, next) => {
     req.user = {
       userId: user.id,
       username: user.username,
-      phoneNumber: user.phoneNumber,
       firstName: user.firstName,
       lastName: user.lastName,
-      isEmailVerify: user.isEmailVerify,
+      isEmailVerified: user.isEmailVerified,
+      role: user.role,
       status: user.status,
     };
 
@@ -95,6 +95,7 @@ const sellerAuthMiddleware = async (req, res, next) => {
       phoneNumber: seller.phoneNumber,
       name: seller.name,
       isEmailVerified: seller.isEmailVerified,
+      role: seller.role,
       status: seller.status,
     };
 
