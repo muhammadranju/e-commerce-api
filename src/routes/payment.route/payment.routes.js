@@ -1,8 +1,15 @@
 const router = require("express").Router();
-
-router.route("/generate-token").post();
-router.route("/process").post();
-router.route("/failed").post();
-router.route("/history").get();
+const restricted = require("../../middleware/restricted.middleware");
+const { UserRolesEnum } = require("../../constants");
+const restrictedArray = restricted(
+  UserRolesEnum.ADMIN,
+  UserRolesEnum.EDITOR,
+  UserRolesEnum.MANAGER,
+  UserRolesEnum.USER
+);
+router.route("/generate-token").post(restrictedArray);
+router.route("/process").post(restrictedArray);
+router.route("/failed").post(restrictedArray);
+router.route("/history").get(restrictedArray);
 
 module.exports = router;
