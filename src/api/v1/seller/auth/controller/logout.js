@@ -11,12 +11,23 @@ const logoutController = asyncHandler(async (req, res) => {
 
   res.clearCookie("seller_token", { expires: new Date(0) });
 
+  const host = req.myHost;
+  // HATEOAS links
+  const links = [
+    {
+      rel: "login",
+      href: `${host}/seller/auth/login`,
+      method: "POST",
+      description: "Login again",
+    },
+  ];
+
   return res
     .status(200)
     .json(
       new ApiResponse(
         204,
-        { content: "204 No Content" },
+        { content: "204 No Content", links },
         "You are now logout successfully."
       )
     );
