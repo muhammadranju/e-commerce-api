@@ -41,23 +41,34 @@ const forgotPasswordController = asyncHandler(async (req, res) => {
     subject: "Please verify your email",
     mailgenContent: emailVerificationMailgenContent(
       `${seller?.name}`,
-      `${req.protocol}://${req.get(
-        "host"
-      )}${ApiVersion}/seller/auth/reset-password/${unHashedToken}`
+      `${req.myHost}${ApiVersion}/seller/auth/reset-password/${unHashedToken}`
     ),
   });
 
+  const host = req.myHost;
+
+  // HATEOAS links
+  const links = [
+    {
+      rel: "reset-password",
+      href: `${host}/seller/auth/reset-password`,
+      method: "GET",
+      description: "Reset password link",
+    },
+  ];
+
   // Return a response confirming that the password reset email has been sent to the seller's email address
   // This response informs the seller about the action taken and prompts them to check their email for further instructions
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { email: seller?.email },
-        "Password reset mail has been sent on your mail id"
-      )
-    );
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        email: seller?.email,
+        links,
+      },
+      "Password reset mail has been sent on your mail id"
+    )
+  );
 });
 
 module.exports = forgotPasswordController;
