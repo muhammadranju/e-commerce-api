@@ -1,4 +1,3 @@
-const { URI } = require("../../../../../constants");
 const Seller = require("../../../../../models/Seller.model/Seller.model");
 const ApiError = require("../../../../../utils/ApiError");
 const ApiResponse = require("../../../../../utils/ApiResponse");
@@ -33,16 +32,36 @@ const profileGetController = asyncHandler(async (req, res) => {
     isEmailVerified: seller.isEmailVerified,
   };
 
+  const host = req.apiHost;
+  // HATEOAS links
+  const links = [
+    {
+      rel: "self",
+      href: `${host}/seller/profile/${seller._id}`,
+      method: "GET",
+      description: "Retrieve your profile information",
+    },
+    {
+      rel: "update",
+      href: `${host}/seller/profile/${seller._id}`,
+      method: "PUT",
+      description: "Update your profile information",
+    },
+    {
+      rel: "delete",
+      href: `${host}/seller/profile/${seller._id}`,
+      method: "DELETE",
+      description: "Delete your profile",
+    },
+  ];
+
   // Return the seller's profile in the response
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        links: {
-          self: `${URI}/seller/profile`,
-          next: `${URI}/seller/profile/${sellerId}`,
-        },
         sellerInfo,
+        links,
       },
       "Get seller account successfully."
     )
