@@ -3,7 +3,7 @@ const Seller = require("../../../../../models/Seller.model/Seller.model");
 const ApiError = require("../../../../../utils/ApiError");
 const ApiResponse = require("../../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../../utils/asyncHandler");
-
+const config = require("../../../../../config/config");
 /**
  * Generates new access and refresh tokens for the provided user ID.
  *
@@ -59,8 +59,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     // Decode the token using the seller's refresh token secret
     const decodedToken = jwt.verify(
       incomingRefreshToken,
-      // eslint-disable-next-line no-undef
-      process.env.SELLER_REFRESH_TOKEN_SECRET
+      config.SELLER_REFRESH_TOKEN_SECRET
     );
 
     // Find the seller associated with the decoded token
@@ -81,6 +80,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefreshTokens(seller._id);
 
+    const host = req.myHost;
+    // HATEOAS links
+    const links = [
+      {
+        rel: "login",
+        href: `${host}/seller/auth/login`,
+        method: "POST",
+        description: "Login again",
+      },
+    ];
+
     // Set the new access and refresh tokens as cookies in the response
     // Return a JSON response confirming successful token refresh
     return res
@@ -90,7 +100,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken: newRefreshToken },
+          { accessToken, refreshToken: newRefreshToken, links },
           "Access token refreshed successfully."
         )
       );
