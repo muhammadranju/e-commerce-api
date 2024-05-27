@@ -21,6 +21,9 @@ const wishlistRoutes = require("./wishlists.routes/wishlists.routes");
 // import seller routers
 const sellerRoutes = require("./seller.routes/seller.routes");
 const storeRoutes = require("./store.routes/store.routes");
+
+// this routes only for admins
+const admin = require("./admin.routes/auth/register.routes");
 // this routes is checking api health
 router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
@@ -37,5 +40,6 @@ router.use("/wishlists", wishlistRoutes);
 router.use("/products", productRoutes);
 // defined a seller routers
 router.use("/seller", [sellerRoutes, storeRoutes]);
+router.use("/admins", admin);
 
 module.exports = router;
