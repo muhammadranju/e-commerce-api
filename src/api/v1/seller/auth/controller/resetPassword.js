@@ -54,11 +54,22 @@ const resetPasswordSellerController = asyncHandler(async (req, res) => {
   // - Update the seller's password to the newly provided one
   await seller.save();
 
+  const host = req.myHost;
+  // HATEOAS links
+  const links = [
+    {
+      rel: "login",
+      href: `${host}/seller/auth/login`,
+      method: "POST",
+      description: "Login with new password",
+    },
+  ];
+
   // Return a response confirming the successful password change
   // This response informs the seller that their password has been successfully updated
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Password was change successfully."));
+    .json(new ApiResponse(200, { links }, "Password was change successfully."));
 });
 
 module.exports = resetPasswordSellerController;
