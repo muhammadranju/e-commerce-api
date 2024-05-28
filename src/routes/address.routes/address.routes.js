@@ -1,26 +1,33 @@
 const router = require("express").Router();
 const { controller: address } = require("../../api/v1/address/");
-const { UserRolesEnum } = require("../../constants");
 const auth = require("../../middleware/auth.middleware");
-const restricted = require("../../middleware/restricted.middleware");
+const { setAbilities, canPerform } = require("../../middleware/restrictedMode");
 
-const restrictedArray = restricted(
-  UserRolesEnum.ADMIN,
-  UserRolesEnum.EDITOR,
-  UserRolesEnum.MANAGER,
-  UserRolesEnum.USER
-);
-router
-  .route("/profile/addresses")
-  .get(auth.authMiddleware, restrictedArray, address.findAll);
+router.route("/profile/addresses").get(auth.authMiddleware, address.findAll);
 router
   .route("/profile/address")
-  .post(auth.authMiddleware, restrictedArray, address.create);
+  .post(
+    auth.authMiddleware,
+    setAbilities,
+    canPerform("create", "Addresses"),
+    address.create
+  );
 router
   .route("/profile/address")
-  .patch(auth.authMiddleware, restrictedArray, address.update);
+  .patch(
+    auth.authMiddleware,
+    auth.authMiddleware,
+    setAbilities,
+    canPerform("update", "Addresses"),
+    address.update
+  );
 router
   .route("/profile/address/")
-  .delete(auth.authMiddleware, restrictedArray, address.deleteAddress);
+  .delete(
+    auth.authMiddleware,
+    setAbilities,
+    canPerform("delete", "Addresses"),
+    address.deleteAddress
+  );
 
 module.exports = router;
