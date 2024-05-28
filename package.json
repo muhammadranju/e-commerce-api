@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/muhammadranju/e-commerce-api#readme",
   "dependencies": {
+    "@casl/ability": "^6.7.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.0.1",
     "compression": "^1.7.4",
