@@ -49,7 +49,7 @@ const addressSchema = new mongoose.Schema(
       type: Boolean,
       default: isDefault.UNVERIFIED,
     },
-    isDefaultBulling: {
+    isDefaultBilling: {
       type: Boolean,
       default: isDefault.UNVERIFIED,
     },
