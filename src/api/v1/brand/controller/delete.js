@@ -1,4 +1,3 @@
-const { Mongoose } = require("mongoose");
 const asyncHandler = require("../../../../utils/asyncHandler");
 const ApiError = require("../../../../utils/ApiError");
 const Brand = require("../../../../models/Brand.model/Brand.model");
@@ -9,7 +8,7 @@ const brandDeleteController = asyncHandler(async (req, res) => {
   const brandUrl = req.params.brandId;
 
   // Check if brandId is a valid ObjectId
-  if (!Mongoose.Types.ObjectId.isValid(brandUrl)) {
+  if (!brandUrl) {
     throw new ApiError(400, "Invalid brandId format.");
   }
 
@@ -22,7 +21,7 @@ const brandDeleteController = asyncHandler(async (req, res) => {
   }
 
   // Delete the brand from the database
-  await brand.deleteOne();
+  // await brand.deleteOne();
 
   const host = req.apiHost;
 
