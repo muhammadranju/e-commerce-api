@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 const { ModelRefNames } = require("../../constants");
+const { default: slugify } = require("slugify");
+
 const BrandSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
-      unique: true,
     },
-    brand_url: {
+    slug: {
       type: String,
     },
     description: {
@@ -44,10 +45,10 @@ const BrandSchema = new mongoose.Schema(
   }
 );
 
+// eslint-disable-next-line no-unused-vars
 BrandSchema.pre("save", async function (next) {
   if (this.isModified("name")) {
-    const make_url = this.name?.split(" ")?.join("_")?.toLocaleLowerCase();
-    this.brand_url = make_url;
+    this.slug = `${slugify(this.name, { lower: true })}`;
   }
 });
 
