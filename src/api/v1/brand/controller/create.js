@@ -15,11 +15,13 @@ const createBrandController = asyncHandler(async (req, res) => {
   }
 
   // Normalize the brand URL using the slugify library
-  // const make_url = name?.split(" ")?.join("_")?.toLocaleLowerCase();
   const normalizedUrl = slugify(name, { lower: true });
 
   // Check if a brand with the same URL already exists in the database
-  const existingBrand = await Brand.findOne({ brand_url: normalizedUrl });
+  const existingBrand = await Brand.findOne({ slug: normalizedUrl });
+  console.log(existingBrand);
+
+  //you need to fix existingBrand, the normalizedUrl is not working, it is not creating a brand with the same name as an existing brand in the database
   if (existingBrand) {
     // If a brand with the same URL exists, throw a 400 Bad Request error
     throw new ApiError(400, "brand name already exits");
@@ -27,7 +29,6 @@ const createBrandController = asyncHandler(async (req, res) => {
 
   // If all data is valid and unique, create a new Brand instance
   const brand = new Brand({ name, description, logo, website, socialMedia });
-  // console.log(brand);
 
   // Save the new brand to the database
   await brand.save();
@@ -37,7 +38,7 @@ const createBrandController = asyncHandler(async (req, res) => {
   const links = [
     {
       rel: "self",
-      href: `${host}/brands/${brand._id}`,
+      href: `${host}/brands/${brand.brand_url}`,
       method: "GET",
       description: "Get created brand details",
     },
