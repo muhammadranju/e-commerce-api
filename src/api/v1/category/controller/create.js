@@ -1,3 +1,4 @@
+const { default: slugify } = require("slugify");
 const Category = require("../../../../models/Category.model/Category.model");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
@@ -5,14 +6,15 @@ const asyncHandler = require("../../../../utils/asyncHandler");
 
 const categoriesCreateController = asyncHandler(async (req, res) => {
   // get data from req.body frontend side
-  const { name, description, image } = req.body;
+  const { name, description, image, parent } = req.body;
 
   // validate all data name, description, image, isActive
   if ((!name, !description, !image)) {
     throw new ApiError(400, "Categories fields are required.");
   }
 
-  const make_url = name?.split(" ")?.join("_")?.toLocaleLowerCase();
+  // const make_url = name?.split(" ")?.join("_")?.toLocaleLowerCase();
+  const make_url = `${slugify(name, { lower: true })}`;
 
   const findBrand = await Category.findOne({ category_url: make_url });
   if (findBrand) {
@@ -20,7 +22,7 @@ const categoriesCreateController = asyncHandler(async (req, res) => {
   }
 
   // if all ok then save to the database
-  const categories = new Category({ name, description, image });
+  const categories = new Category({ name, description, image, parent });
   await categories.save();
 
   const host = req.apiHost;
