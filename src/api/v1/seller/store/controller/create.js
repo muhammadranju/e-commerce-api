@@ -18,8 +18,11 @@ const createStore = asyncHandler(async (req, res) => {
   // Destructure the shop data from the request body
   const { storeName, storeDescription, storeAddress, logo, banner } = req.body;
 
-  // Get the sellerId from the request object
+  // Get the sellerId from the request object or request body
   const sellerId = req.seller.sellerId || req.body.sellerId;
+
+  // Get the store type from the query parameters
+  const { type } = req.query;
 
   // Find the seller and store in the database
   const [isSeller, isStore] = await Promise.all([
@@ -39,34 +42,41 @@ const createStore = asyncHandler(async (req, res) => {
 
   // Check if all required fields are present in the request body
   if (!storeName || !storeDescription || !storeAddress) {
-    throw new ApiError(400, "All fields are required"); // Throw an error if any of the required fields is missing
+    throw new ApiError(400, "All fields are required");
   }
 
   // Generate a random URL link for the shop
   const createStoreUrlLink = `${slugify(storeName)}-${randomstring.generate({
     length: 7,
     charset: "alphanumeric",
-  })}`;
+  })}`.toLowerCase();
 
-  // Create a new store object
-  const store = new Store({
+  // Prepare store data for creation
+  const storeData = {
     storeName,
     storeDescription,
     storeAddress,
     logo,
     banner,
-    sellerId: sellerId || isSeller._id,
-    storeURI: createStoreUrlLink?.toLowerCase(),
-  });
+    sellerId,
+    storeURI: createStoreUrlLink,
+  };
+
+  // If the store type matches the seller's role, update the sellerId in storeData
+  if (type.toLowerCase() === req.seller.role.toLowerCase()) {
+    storeData.sellerId = req.body.sellerId;
+  }
+
+  // Create a new store object with the prepared data
+  const store = new Store(storeData);
 
   // Save the store to the database
-  isSeller.shopId = store._id;
-  await isSeller.save({ validateBeforeSave: true });
   await store.save();
 
+  // Define the host for HATEOAS links
   const host = req.apiHost;
 
-  // HATEOAS links
+  // Define HATEOAS links for the response
   const links = [
     {
       rel: "self",
@@ -76,26 +86,19 @@ const createStore = asyncHandler(async (req, res) => {
     },
     {
       rel: "update-store",
-      href: [
-        `${host}/seller/store/${store.storeURI}`,
-        `${host}/seller/store/${store.storeUID}`,
-      ],
-
+      href: `${host}/seller/store/${store.storeURI}`,
       method: "PUT",
       description: "Update this store",
     },
     {
       rel: "delete-store",
-      href: [
-        `${host}/seller/stores/${store.storeURI}`,
-        `${host}/seller/stores/${store.storeUID}`,
-      ],
+      href: `${host}/seller/stores/${store.storeURI}`,
       method: "DELETE",
       description: "Delete this store",
     },
   ];
 
-  // Return a JSON response with the created store
+  // Return a JSON response with the created store and HATEOAS links
   return res
     .status(201)
     .json(
