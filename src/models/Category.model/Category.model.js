@@ -18,7 +18,7 @@ const categorySchema = new Schema(
     parent: {
       type: Schema.Types.ObjectId,
       ref: ModelRefNames.Category,
-      default: null,
+      default: undefined,
     },
     image: {
       type: String,
@@ -40,8 +40,6 @@ categorySchema.pre("save", async function (next) {
     this.category_url = `${slugify(this.name, {
       lower: true,
     })}`;
-    // const make_url = this.name?.split(" ")?.join("_")?.toLocaleLowerCase();
-    // this.category_url = make_url;
   }
   next();
 });
