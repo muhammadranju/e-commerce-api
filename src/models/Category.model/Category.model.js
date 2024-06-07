@@ -24,6 +24,10 @@ const categorySchema = new Schema(
       type: String,
       default: "",
     },
+    public_id: {
+      type: String,
+      default: "",
+    },
     isActive: {
       type: Boolean,
       default: true,
