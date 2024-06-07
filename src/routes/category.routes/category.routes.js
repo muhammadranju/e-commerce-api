@@ -6,6 +6,7 @@ const {
   sellerAuthMiddleware: adminAuth,
 } = require("../../middleware/auth.middleware");
 
+const upload = require("../../middleware/multer.middleware");
 // Define routes for category operations
 
 // Route to get a single category by its ID
@@ -22,6 +23,7 @@ router
     adminAuth,
     setAbilities,
     canPerform("create", "Categories"),
+    upload.single("image"),
     category.create
   );
 
