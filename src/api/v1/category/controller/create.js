@@ -42,19 +42,19 @@ const categoriesCreateController = asyncHandler(async (req, res) => {
     },
     {
       rel: "get_category",
-      href: `${host}/categories/${categories._id}`,
+      href: `${host}/categories/${categories.category_url}`,
       method: "GET",
       description: "Retrieve the created category",
     },
     {
       rel: "update_category",
-      href: `${host}/categories/${categories._id}`,
+      href: `${host}/categories/${categories.category_url}`,
       method: "PUT",
       description: "Update the created category",
     },
     {
       rel: "delete_category",
-      href: `${host}/categories/${categories._id}`,
+      href: `${host}/categories/${categories.category_url}`,
       method: "DELETE",
       description: "Delete the created category",
     },
