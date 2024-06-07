@@ -19,15 +19,12 @@ const createStore = asyncHandler(async (req, res) => {
   const { storeName, storeDescription, storeAddress, logo, banner } = req.body;
 
   // Get the sellerId from the request object or request body
-  const sellerId = req.seller.sellerId || req.body.sellerId;
-
-  // Get the store type from the query parameters
-  const { type } = req.query;
+  const sellerId = req.seller.sellerId;
 
   // Find the seller and store in the database
   const [isSeller, isStore] = await Promise.all([
     Seller.findById(sellerId),
-    Store.findOne({ sellerId: sellerId }),
+    Store.findOne({ sellerId }),
   ]);
 
   // Check if the store already exists in the database
@@ -62,17 +59,13 @@ const createStore = asyncHandler(async (req, res) => {
     storeURI: createStoreUrlLink,
   };
 
-  // If the store type matches the seller's role, update the sellerId in storeData
-  if (type.toLowerCase() === req.seller.role.toLowerCase()) {
-    storeData.sellerId = req.body.sellerId;
-  }
-
   // Create a new store object with the prepared data
   const store = new Store(storeData);
+  isSeller.shopId = store._id;
 
   // Save the store to the database
   await store.save();
-
+  await isSeller.save({ validateBeforeSave: true });
   // Define the host for HATEOAS links
   const host = req.apiHost;
 
