@@ -3,6 +3,7 @@ const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
 
+const { deleteOnCloudinary } = require("../../../../utils/cloudinary.utils");
 const categoriesDeleteController = asyncHandler(async (req, res) => {
   // get category by id come form params categoryId
   const { categoryId } = req.params;
@@ -15,8 +16,12 @@ const categoriesDeleteController = asyncHandler(async (req, res) => {
     throw new ApiError(404, "This Category is not found.");
   }
 
+  console.log(categories.public_id);
   // then delete the category from the database
-  await categories.deleteOne();
+  if (categories?.public_id) {
+    await deleteOnCloudinary(categories.public_id);
+    await categories.deleteOne();
+  }
 
   const host = req.apiHost;
   // Create HATEOAS links for the response
