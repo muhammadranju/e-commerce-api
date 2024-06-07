@@ -23,7 +23,7 @@ const sellerRoutes = require("./seller.routes/seller.routes");
 const storeRoutes = require("./store.routes/store.routes");
 
 // this routes only for admins
-const admin = require("./admin.routes/auth/register.routes");
+const admin = require("./admin.routes");
 // this routes is checking api health
 router.get(`${ApiVersion}/health`, (req, res) =>
   res.json({ message: "Server is healthy😀" })
