@@ -1,15 +1,18 @@
 const { default: slugify } = require("slugify");
+const fs = require("fs");
 const Category = require("../../../../models/Category.model/Category.model");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
+const { uploadOnCloudinary } = require("../../../../utils/cloudinary.utils");
 
 const categoriesCreateController = asyncHandler(async (req, res) => {
   // get data from req.body frontend side
-  const { name, description, image, parent } = req.body;
+  const { name, description, parent } = req.body;
 
+  const filePath = req.file?.path;
   // validate all data name, description, image, isActive
-  if ((!name, !description, !image)) {
+  if ((!name, !description, !filePath)) {
     throw new ApiError(400, "Categories fields are required.");
   }
 
@@ -18,11 +21,21 @@ const categoriesCreateController = asyncHandler(async (req, res) => {
 
   const findBrand = await Category.findOne({ category_url: make_url });
   if (findBrand) {
+    fs.unlinkSync(filePath);
     throw new ApiError(400, "Category name already exits");
   }
+  const folderName = "categories";
+  // upload image on cloudinary
+  const image = await uploadOnCloudinary(filePath, folderName);
 
   // if all ok then save to the database
-  const categories = new Category({ name, description, image, parent });
+  const categories = new Category({
+    name,
+    description,
+    public_id: image.public_id,
+    image: image.url,
+    parent,
+  });
   await categories.save();
 
   const host = req.apiHost;
