@@ -45,32 +45,6 @@ const addressSchema = new mongoose.Schema(
     companyName: {
       type: String,
     },
-
-    ship_name: {
-      type: String,
-    },
-    ship_address: {
-      type: String,
-    },
-
-    ship_city: {
-      type: String,
-    },
-    ship_state: {
-      type: String,
-    },
-    ship_postcode: {
-      type: String,
-    },
-
-    ship_country: {
-      type: String,
-    },
-
-    ship_phone: {
-      type: String,
-    },
-
     isDefaultDelivery: {
       type: Boolean,
       default: isDefault.UNVERIFIED,

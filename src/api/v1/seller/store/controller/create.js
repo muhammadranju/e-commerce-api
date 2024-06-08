@@ -17,7 +17,7 @@ const Seller = require("../../../../../models/Seller.model/Seller.model");
 const createStore = asyncHandler(async (req, res) => {
   // Destructure the shop data from the request body
   const { storeName, storeDescription, storeAddress, logo, banner } = req.body;
-  console.log(req.body);
+
   // Get the sellerId from the request object or request body
   const sellerId = req.seller.sellerId;
 
@@ -52,19 +52,20 @@ const createStore = asyncHandler(async (req, res) => {
   const storeData = {
     storeName,
     storeDescription,
-    ...storeAddress,
+    storeAddress,
     logo,
     banner,
     sellerId,
     storeURI: createStoreUrlLink,
   };
+
   // Create a new store object with the prepared data
   const store = new Store(storeData);
   isSeller.shopId = store._id;
-  console.log(store);
+
   // Save the store to the database
-  // await store.save();
-  // await isSeller.save({ validateBeforeSave: true });
+  await store.save();
+  await isSeller.save({ validateBeforeSave: true });
   // Define the host for HATEOAS links
   const host = req.apiHost;
 
