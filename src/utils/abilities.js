@@ -27,6 +27,7 @@ const USER_CAN = [
   "WishList",
   "Checkout",
   "Reviews",
+  "Payments",
   "Addresses",
 ];
 
