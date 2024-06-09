@@ -30,6 +30,10 @@ const _config = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 
+  SSL_STORE_ID: process.env.SSL_STORE_ID,
+  SSL_STORE_PASSWORD: process.env.SSL_STORE_PASSWORD,
+  SSL_STORE_IS_LIVE: process.env.SSL_STORE_IS_LIVE,
+
   ENV: process.env.NODE_ENV,
 };
 const config = Object.freeze(_config);
