@@ -1,15 +1,20 @@
 const router = require("express").Router();
-const restricted = require("../../middleware/restricted.middleware");
-const { UserRolesEnum } = require("../../constants");
-const restrictedArray = restricted(
-  UserRolesEnum.ADMIN,
-  UserRolesEnum.EDITOR,
-  UserRolesEnum.MANAGER,
-  UserRolesEnum.USER
-);
-router.route("/generate-token").post(restrictedArray);
-router.route("/process").post(restrictedArray);
-router.route("/failed").post(restrictedArray);
-router.route("/history").get(restrictedArray);
+const { controller: payment } = require("../../api/v1/payment");
+const { authMiddleware } = require("../../middleware/auth.middleware");
+const { setAbilities, canPerform } = require("../../middleware/restrictedMode");
+
+router
+  .route("/")
+  .post(
+    authMiddleware,
+    setAbilities,
+    canPerform("create", "Payments"),
+    payment.create
+  );
+
+router.route("/success").post(payment.success);
+router.route("/cancel").post(payment.cancel);
+router.route("/failed").post(payment.failed);
+router.route("/ipn").post(payment.ipn);
 
 module.exports = router;
