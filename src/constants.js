@@ -54,12 +54,12 @@ const OrderStatusEnum = {
 const AvailableOrderStatuses = Object.values(OrderStatusEnum);
 
 /**
- * @type {{ SUCCEEDED: "SUCCEEDED"; PENDING: "PENDING"; CANCELLED: "CANCELLED"; FAILED: "FAILED"; REFUNDED: "REFUNDED" } as const}
+ * @type {{ SUCCEEDED: "SUCCEEDED"; UNPAID: "UNPAID"; CANCELLED: "CANCELLED"; FAILED: "FAILED"; REFUNDED: "REFUNDED" } as const}
  */
 
 const PaymentStatus = {
   SUCCEEDED: "SUCCEEDED",
-  PENDING: "PENDING",
+  UNPAID: "UNPAID",
   CANCELLED: "CANCELLED",
   FAILED: "FAILED",
   REFUNDED: "REFUNDED",
