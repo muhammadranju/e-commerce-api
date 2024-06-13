@@ -3,6 +3,10 @@ const {
   ModelRefNames,
   OrderStatusEnum,
   AvailableOrderStatuses,
+  AvailablePaymentStatus,
+  PaymentStatus,
+  PaymentMethods,
+  AvailablePaymentMethods,
 } = require("../../constants");
 
 const orderSchema = new Schema(
@@ -25,6 +29,16 @@ const orderSchema = new Schema(
     totalAmount: {
       type: Number,
       required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: AvailablePaymentStatus,
+      default: PaymentStatus.UNPAID,
+    },
+    paymentMethods: {
+      type: String,
+      enum: AvailablePaymentMethods,
+      default: PaymentMethods.CASH_ON_DELIVERY,
     },
     // Shipping address
     shippingAddressId: {
@@ -77,7 +91,7 @@ const orderSchema = new Schema(
     //   },
     // },
     // Order status
-    status: {
+    orderStatus: {
       type: String,
       enum: AvailableOrderStatuses,
       default: OrderStatusEnum.PLACED,
