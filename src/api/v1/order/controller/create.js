@@ -66,20 +66,16 @@ const createOrderController = asyncHandler(async (req, res) => {
 
   const links = [
     {
+      rel: "ayment",
+      href: `${host}/payment/${order._id}`,
+      method: "POST",
+    },
+    {
       rel: "self",
       href: `${host}/checkout/orders/${order._id}`,
       method: "GET",
     },
-    {
-      rel: "update",
-      href: `${host}/checkout/orders/${order._id}`,
-      method: "PUT",
-    },
-    {
-      rel: "delete",
-      href: `${host}/checkout/orders/${order._id}`,
-      method: "DELETE",
-    },
+
     {
       rel: "user-orders",
       href: `${host}/users/profile/orders`,
