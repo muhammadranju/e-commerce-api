@@ -30,15 +30,50 @@ const orderSchema = new Schema(
       type: Number,
       required: true,
     },
+
     paymentStatus: {
       type: String,
       enum: AvailablePaymentStatus,
       default: PaymentStatus.UNPAID,
     },
+
     paymentMethods: {
       type: String,
       enum: AvailablePaymentMethods,
       default: PaymentMethods.CASH_ON_DELIVERY,
+    },
+    transactionID: {
+      type: String,
+      required: true,
+    },
+    trackingNumber: {
+      type: String,
+      required: true,
+    },
+    paymentType: {
+      type: {
+        card_type: {
+          type: String,
+        },
+        card_no: {
+          type: String,
+        },
+        bank_tran_id: {
+          type: String,
+        },
+        currency: {
+          type: String,
+        },
+        card_issuer: {
+          type: String,
+        },
+        card_brand: {
+          type: String,
+        },
+        card_issuer_country: {
+          type: String,
+        },
+      },
     },
     // Shipping address
     shippingAddressId: {
@@ -75,21 +110,7 @@ const orderSchema = new Schema(
         },
       },
     },
-    // Payment information
-    // paymentInfo: {
-    //   type: {
-    //     method: {
-    //       type: String,
-    //       required: true,
-    //     },
-    //     transactionId: {
-    //       type: String,
-    //     },
-    //     amount: {
-    //       type: Number,
-    //     },
-    //   },
-    // },
+
     // Order status
     orderStatus: {
       type: String,
