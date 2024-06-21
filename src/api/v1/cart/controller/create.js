@@ -79,10 +79,10 @@ const createAddTOCartController = asyncHandler(async (req, res) => {
       description: "View Cart",
     },
     {
-      rel: "checkout",
-      href: `${host}/checkout/orders`,
+      rel: "orders",
+      href: `${host}/orders`,
       method: "GET",
-      description: "Checkout",
+      description: "Orders",
     },
     // Add more links as needed
   ];
