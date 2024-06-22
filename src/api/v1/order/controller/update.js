@@ -51,27 +51,27 @@ const updateOrderController = asyncHandler(async (req, res) => {
   const links = [
     {
       rel: "self",
-      href: `${host}/checkout/orders`,
+      href: `${host}/orders`,
       method: "GET",
     },
     {
       rel: "create",
-      href: `${host}/checkout/orders`,
+      href: `${host}/orders`,
       method: "POST",
     },
     {
       rel: "update",
-      href: `${host}/checkout/orders`,
+      href: `${host}/orders`,
       method: "PUT",
     },
     {
       rel: "delete",
-      href: `${host}/checkout/orders`,
+      href: `${host}/orders`,
       method: "DELETE",
     },
     {
       rel: "all-orders",
-      href: `${host}/checkout/orders`,
+      href: `${host}/orders`,
       method: "GET",
     },
   ];
