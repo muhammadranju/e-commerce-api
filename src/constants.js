@@ -39,7 +39,7 @@ const UserCommentStatusEnum = {
 const AvailableCommentStatus = Object.values(UserCommentStatusEnum);
 
 /**
- * @type {{ PENDING: "PENDING"; CANCELLED: "CANCELLED"; DELIVERED: "DELIVERED"; PLACED: "PLACED"; PROCESSING: "PROCESSING"; SHIPPED: "SHIPPED"; } as const}
+ * @type {{ PENDING: "PENDING"; CANCELLED: "CANCELLED"; DELIVERED: "DELIVERED"; PLACED: "PLACED"; OUT_FOR_DELIVERY: "PROCESSING"; SHIPPED: "SHIPPED"; } as const}
  */
 
 // Order Enums
@@ -48,7 +48,7 @@ const OrderStatusEnum = {
   CANCELLED: "CANCELLED",
   DELIVERED: "DELIVERED",
   PLACED: "PLACED",
-  PROCESSING: "PROCESSING",
+  OUT_FOR_DELIVERY: "PROCESSING",
   SHIPPED: "SHIPPED",
 };
 const AvailableOrderStatuses = Object.values(OrderStatusEnum);
