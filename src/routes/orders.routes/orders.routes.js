@@ -2,17 +2,10 @@ const router = require("express").Router();
 const { authMiddleware } = require("../../middleware/auth.middleware");
 const { controller: order } = require("../../api/v1/order");
 const { canPerform, setAbilities } = require("../../middleware/restrictedMode");
+const { controller: tracking } = require("../../api/v1/admin/orders");
 
 router
-  .route("/orders/")
-  .post(
-    authMiddleware,
-    setAbilities,
-    canPerform("create", "Orders"),
-    order.create
-  );
-router
-  .route("/orders/:orderId")
+  .route("/view/:orderId")
   .get(
     authMiddleware,
     setAbilities,
@@ -20,7 +13,7 @@ router
     order.findSingle
   );
 router
-  .route("/orders/:orderId")
+  .route("/:orderId")
   .patch(
     authMiddleware,
     setAbilities,
@@ -29,15 +22,33 @@ router
   );
 
 router
-  .route("/orders/:orderId/confirm")
+  .route("/:orderId/confirm")
   .delete(
     authMiddleware,
     setAbilities,
     canPerform("delete", "Orders"),
     order.deleteItem
   );
+
 router
-  .route("/orders")
+  .route("/tracking")
+  .get(
+    authMiddleware,
+    setAbilities,
+    canPerform("create", "Orders"),
+    tracking.orderTracking
+  );
+router
+  .route("/")
+  .post(
+    authMiddleware,
+    setAbilities,
+    canPerform("create", "Orders"),
+    order.create
+  );
+
+router
+  .route("/")
   .get(
     authMiddleware,
     setAbilities,
