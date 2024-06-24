@@ -32,7 +32,7 @@ router.get(`${ApiVersion}/health`, (req, res) =>
 router.use("/users", [userRoutes, reviewsRoutes, addressRoutes]);
 router.use("/auth", authRoutes);
 router.use("/carts", cartsRoutes);
-router.use("/checkout", ordersRoutes);
+router.use("/orders", ordersRoutes);
 router.use("/payment", paymentRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/brands", brandRoutes);
