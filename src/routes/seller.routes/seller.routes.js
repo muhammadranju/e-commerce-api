@@ -1,21 +1,11 @@
 const router = require(`express`).Router();
-
 const { controller: auth } = require("../../api/v1/seller/auth");
 const { controller: profile } = require("../../api/v1/seller/profile");
-
 const { sellerAuthMiddleware } = require(`../../middleware/auth.middleware`);
 const isLoginMiddleware = require(`../../middleware/isSellerLoginMiddleware`);
-
 const rateLimiter = require("../../utils/rateLimit.utils");
-const restricted = require("../../middleware/restricted.middleware");
-const { UserRolesEnum } = require("../../constants");
+const { canPerform, setAbilities } = require("../../middleware/restrictedMode");
 
-const restrictedArray = restricted(
-  UserRolesEnum.ADMIN,
-  UserRolesEnum.EDITOR,
-  UserRolesEnum.MANAGER,
-  UserRolesEnum.SELLER
-);
 // this route is reset password route patch using method
 router.route(`/auth/reset-password/:resetToken`).patch(auth.resetPassword);
 
@@ -38,18 +28,38 @@ router.route(`/auth/forgot-password`).post(auth.forgotPassword);
 // logout route using post method
 router
   .route(`/auth/logout`)
-  .post(sellerAuthMiddleware, restrictedArray, auth.logout);
+  .post(
+    sellerAuthMiddleware,
+    setAbilities,
+    canPerform("update", "Orders"),
+    auth.logout
+  );
 
 router
   .route(`/profile/:seller_id`)
-  .get(sellerAuthMiddleware, restrictedArray, profile.findOne);
+  .get(
+    sellerAuthMiddleware,
+    setAbilities,
+    canPerform("update", "Orders"),
+    profile.findOne
+  );
 
 router
   .route(`/profile`)
-  .get(sellerAuthMiddleware, restrictedArray, profile.findSingle);
+  .get(
+    sellerAuthMiddleware,
+    setAbilities,
+    canPerform("read", "Orders"),
+    profile.findSingle
+  );
 
 router
   .route(`/profile/`)
-  .patch(sellerAuthMiddleware, restrictedArray, profile.update);
+  .patch(
+    sellerAuthMiddleware,
+    setAbilities,
+    canPerform("update", "Orders"),
+    profile.update
+  );
 
 module.exports = router;
