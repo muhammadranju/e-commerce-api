@@ -4,7 +4,7 @@ const { authMiddleware } = require("../../middleware/auth.middleware");
 const { setAbilities, canPerform } = require("../../middleware/restrictedMode");
 
 router
-  .route("/")
+  .route("/place/:paymentId")
   .post(
     authMiddleware,
     setAbilities,
