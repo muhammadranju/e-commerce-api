@@ -6,9 +6,17 @@ const {
   AvailablePaymentStatus,
   PaymentStatus,
   PaymentMethods,
-  AvailablePaymentMethods,
+  // AvailablePaymentMethods,
 } = require("../../constants");
+const randomstring = require("randomstring");
+// Generate a random transaction ID
+const transactionID = `BDN${randomstring.generate(17).toUpperCase()}`;
 
+// Generate a random tracking number
+const trackingNumber = `DEX-BDN-${randomstring.generate({
+  length: 10,
+  charset: "numeric",
+})}`;
 const orderSchema = new Schema(
   {
     // User who placed the order
@@ -39,16 +47,16 @@ const orderSchema = new Schema(
 
     paymentMethods: {
       type: String,
-      enum: AvailablePaymentMethods,
       default: PaymentMethods.CASH_ON_DELIVERY,
     },
+
     transactionID: {
       type: String,
-      required: true,
+      default: transactionID,
     },
     trackingNumber: {
       type: String,
-      required: true,
+      default: trackingNumber,
     },
     paymentType: {
       type: {
@@ -56,6 +64,9 @@ const orderSchema = new Schema(
           type: String,
         },
         card_no: {
+          type: String,
+        },
+        error: {
           type: String,
         },
         bank_tran_id: {
@@ -71,6 +82,9 @@ const orderSchema = new Schema(
           type: String,
         },
         card_issuer_country: {
+          type: String,
+        },
+        tran_date: {
           type: String,
         },
       },
