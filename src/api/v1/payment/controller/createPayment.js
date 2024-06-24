@@ -130,7 +130,7 @@ const createPaymentController = asyncHandler(async (req, res) => {
     },
     {
       rel: "order",
-      order: `${host}/checkout/orders`,
+      order: `${host}/orders`,
       method: "GET",
     },
     {
