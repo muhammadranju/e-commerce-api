@@ -5,25 +5,6 @@ const ApiError = require("../../../../utils/ApiError"); // Importing a custom er
 const ApiResponse = require("../../../../utils/ApiResponse"); // Importing a custom response class
 const asyncHandler = require("../../../../utils/asyncHandler"); // Importing an async handler utility
 
-// Validation function for payment details (example implementation)
-const validatePaymentDetails = (details) => {
-  const requiredFields = [
-    "card_type",
-    "card_no",
-    "bank_tran_id",
-    "currency",
-    "card_issuer",
-    "card_brand",
-    "card_issuer_country",
-  ];
-  for (const field of requiredFields) {
-    if (!details[field]) {
-      return false;
-    }
-  }
-  return true;
-};
-
 // Define the successPaymentController function
 const successPaymentController = asyncHandler(async (req, res) => {
   const {
@@ -35,9 +16,11 @@ const successPaymentController = asyncHandler(async (req, res) => {
     card_issuer,
     card_brand,
     card_issuer_country,
+    tran_date,
   } = req.body;
   // Extract transaction ID from the request body
 
+  console.log(req.body);
   if (!tran_id) {
     throw new ApiError(400, "Transaction ID is required");
   }
@@ -64,24 +47,19 @@ const successPaymentController = asyncHandler(async (req, res) => {
     card_issuer,
     card_brand,
     card_issuer_country,
+    tran_date,
   };
-
-  // Validate payment details
-  if (!validatePaymentDetails(paymentType)) {
-    throw new ApiError(400, "Invalid payment details");
-  }
 
   // Update the order's payment status and payment details
   findOrder.paymentStatus = PaymentStatus.SUCCEEDED;
+  findOrder.paymentMethods = card_type;
   findOrder.paymentType = paymentType;
 
   // Save the updated order to the database
   await findOrder.save();
 
   // Send a success response with the updated order details
-  res
-    .status(200)
-    .json(new ApiResponse(200, { findOrder }, "Payment success successfully"));
+  res.status(200).json(new ApiResponse(200, "Payment success successfully"));
 });
 
 // Export the successPaymentController function
