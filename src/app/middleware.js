@@ -12,7 +12,16 @@ const host = require("../middleware/getHost");
 const middleware = [
   express.json({ limit: "16kb" }), // Middleware for parsing JSON request bodies with a size limit of 16kb
   express.urlencoded({ extended: true, limit: "16kb" }), // Middleware for parsing URL-encoded request bodies with a size limit of 16kb
-  compression(), // Middleware for compressing HTTP responses
+  compression({
+    level: 6,
+    threshold: 100 * 1000,
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+  }), // Middleware for compressing HTTP responses
   cookieParser(), // Middleware for parsing cookies
   morgan("dev"), // Morgan middleware for logging HTTP requests in the 'dev' format
   helmet(), // Helmet middleware for setting security-related HTTP headers
