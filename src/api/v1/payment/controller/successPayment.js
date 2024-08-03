@@ -1,9 +1,11 @@
 // Import constants, models, utilities, and asyncHandler
+const config = require("../../../../config/config");
 const { PaymentStatus } = require("../../../../constants"); // Importing payment status constants
 const Order = require("../../../../models/Orders.model/Orders.model"); // Importing the Order model
 const ApiError = require("../../../../utils/ApiError"); // Importing a custom error class
 const ApiResponse = require("../../../../utils/ApiResponse"); // Importing a custom response class
 const asyncHandler = require("../../../../utils/asyncHandler"); // Importing an async handler utility
+const SSLCommerzPayment = require("sslcommerz-lts");
 
 // Define the successPaymentController function
 const successPaymentController = asyncHandler(async (req, res) => {
@@ -19,6 +21,9 @@ const successPaymentController = asyncHandler(async (req, res) => {
     tran_date,
   } = req.body;
   // Extract transaction ID from the request body
+  const data = {
+    val_id: req.body.val_id,
+  };
 
   console.log(req.body);
   if (!tran_id) {
@@ -50,13 +55,26 @@ const successPaymentController = asyncHandler(async (req, res) => {
     tran_date,
   };
 
-  // Update the order's payment status and payment details
-  findOrder.paymentStatus = PaymentStatus.SUCCEEDED;
-  findOrder.paymentMethods = card_type;
-  findOrder.paymentType = paymentType;
+  // Validate the payment using SSLCommerz
+  const sslCommerzInstance = new SSLCommerzPayment(
+    config.SSL_STORE_ID,
+    config.SSL_STORE_PASSWORD
+  );
 
-  // Save the updated order to the database
-  await findOrder.save();
+  // Validate the payment
+  sslCommerzInstance.validate(data).then(async (data) => {
+    //process the response that got from sslcommerz
+    // https://developer.sslcommerz.com/doc/v4/#order-validation-api
+    if (data.status === PaymentStatus.STATUS) {
+      // Update the order's payment status and payment details
+      findOrder.paymentStatus = PaymentStatus.SUCCEEDED;
+      findOrder.paymentMethods = card_type;
+      findOrder.paymentType = paymentType;
+
+      // Save the updated order to the database
+      await findOrder.save();
+    }
+  });
 
   // Send a success response with the updated order details
   res.status(200).json(new ApiResponse(200, "Payment success successfully"));
