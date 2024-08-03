@@ -98,7 +98,8 @@ const createPaymentController = asyncHandler(async (req, res) => {
   const sslCommerzInstance = new SSLCommerzPayment(
     config.SSL_STORE_ID,
     config.SSL_STORE_PASSWORD,
-    config.SSL_STORE_IS_LIVE || false
+    // config.SSL_STORE_IS_LIVE,
+    false
   );
 
   // Create HATEOAS links
