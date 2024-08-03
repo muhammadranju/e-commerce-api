@@ -1,3 +1,5 @@
+const SSLCommerzPayment = require("sslcommerz-lts");
+const config = require("../../../../config/config");
 const { PaymentStatus } = require("../../../../constants");
 const Order = require("../../../../models/Orders.model/Orders.model");
 const ApiError = require("../../../../utils/ApiError");
@@ -16,6 +18,10 @@ const ipnPaymentController = asyncHandler(async (req, res) => {
     card_issuer_country,
     tran_date,
   } = req.body;
+  const data = {
+    val_id: req.body.val_id,
+  };
+
   // Extract transaction ID from the request body
 
   console.log(req.body);
@@ -48,13 +54,26 @@ const ipnPaymentController = asyncHandler(async (req, res) => {
     tran_date,
   };
 
-  // Update the order's payment status and payment details
-  findOrder.paymentStatus = PaymentStatus.SUCCEEDED;
-  findOrder.paymentMethods = card_type;
-  findOrder.paymentType = paymentType;
+  // Validate the payment using SSLCommerz
+  const sslCommerzInstance = new SSLCommerzPayment(
+    config.SSL_STORE_ID,
+    config.SSL_STORE_PASSWORD
+  );
 
-  // Save the updated order to the database
-  await findOrder.save();
+  // Validate the payment
+  sslCommerzInstance.validate(data).then(async (data) => {
+    //process the response that got from sslcommerz
+    // https://developer.sslcommerz.com/doc/v4/#order-validation-api
+    if (data.status === PaymentStatus.STATUS) {
+      // Update the order's payment status and payment details
+      findOrder.paymentStatus = PaymentStatus.SUCCEEDED;
+      findOrder.paymentMethods = card_type;
+      findOrder.paymentType = paymentType;
+
+      // Save the updated order to the database
+      await findOrder.save();
+    }
+  });
 
   res
     .status(200)
