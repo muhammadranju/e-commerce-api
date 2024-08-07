@@ -1,4 +1,3 @@
-const { OrderStatusEnum, PaymentStatus } = require("../../../../constants");
 const Order = require("../../../../models/Orders.model/Orders.model");
 const User = require("../../../../models/User.model/User.model");
 const OrdersItem = require("../../../../models/OrdersItem.model/OrdersItem.model");
@@ -6,7 +5,6 @@ const Product = require("../../../../models/Products.model/Products.model");
 const ApiError = require("../../../../utils/ApiError");
 const ApiResponse = require("../../../../utils/ApiResponse");
 const asyncHandler = require("../../../../utils/asyncHandler");
-
 const createOrderController = asyncHandler(async (req, res) => {
   // Extract necessary information from the request body and authenticated user
   const { items, shippingAddressId } = req.body;
@@ -29,6 +27,7 @@ const createOrderController = asyncHandler(async (req, res) => {
         product: item.productId,
         quantity: item.quantity,
         price: product.regular_price,
+
         // Assuming price is a field in Product
       });
       // Save the order item to the database
@@ -48,31 +47,26 @@ const createOrderController = asyncHandler(async (req, res) => {
     user: userId,
     items: orderItems.map((item) => item._id),
     totalAmount: total,
-    status: OrderStatusEnum.PENDING, // Default status
     shippingAddressId, // Default shipping address ID
-    paymentStatus: PaymentStatus.PENDING, // Default payment status
   });
 
-  // if (user._id !== userId) {
-  //   throw new ApiError(401, "Unauthorized user ");
-  // }
-
+  // Add the order to the user's orders array
   user.orders.push(order._id);
   // Save the order to the database
   await user.save();
   await order.save();
 
+  // Create links for the order
   const host = req.apiHost;
-
   const links = [
     {
-      rel: "ayment",
+      rel: "payment",
       href: `${host}/payment/${order._id}`,
       method: "POST",
     },
     {
       rel: "self",
-      href: `${host}/checkout/orders/${order._id}`,
+      href: `${host}/orders/${order._id}`,
       method: "GET",
     },
 
