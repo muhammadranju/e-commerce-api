@@ -9,7 +9,7 @@ const orderTrackingController = asyncHandler(async (req, res) => {
 
   // Fetch order based on tracking number and populate shipping address
   const order = await Orders.findOne({
-    trackingNumber: trackingNumber,
+    trackingNumber,
   }).populate("shippingAddressId");
 
   // If no order is found, return a 404 response
