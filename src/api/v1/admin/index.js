@@ -1,2 +1,5 @@
-const controller = require("./controller");
-module.exports = { controller };
+const orders = require("./orders");
+const sellers = require("./sellers");
+const users = require("./users");
+
+module.exports = { orders, sellers, users };

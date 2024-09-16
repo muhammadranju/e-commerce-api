@@ -48,12 +48,12 @@ const deleteOrderController = asyncHandler(async (req, res) => {
   const links = [
     {
       rel: "self",
-      href: `${host}/checkout/orders/${orderId}`,
+      href: `${host}/orders/${orderId}`,
       method: "GET",
     },
     {
       rel: "create",
-      href: `${host}/checkout/orders`,
+      href: `${host}/orders`,
       method: "POST",
     },
     {

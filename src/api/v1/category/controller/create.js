@@ -12,9 +12,9 @@ const categoriesCreateController = asyncHandler(async (req, res) => {
 
   const filePath = req.file?.path;
   // validate all data name, description, image, isActive
-  if ((!name, !description, !filePath)) {
-    throw new ApiError(400, "Categories fields are required.");
-  }
+  // if ((!name, !description, !filePath)) {
+  //   throw new ApiError(400, "Categories fields are required.");
+  // }
 
   // const make_url = name?.split(" ")?.join("_")?.toLocaleLowerCase();
   const make_url = `${slugify(name, { lower: true })}`;
@@ -32,8 +32,9 @@ const categoriesCreateController = asyncHandler(async (req, res) => {
   const categories = new Category({
     name,
     description,
-    public_id: image.public_id,
-    image: image.url,
+    // public_id: image.public_id,
+    // image: image.url,
+    image,
     parent,
   });
   await categories.save();

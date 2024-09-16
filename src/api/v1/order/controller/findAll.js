@@ -23,7 +23,7 @@ const findOrderController = asyncHandler(async (req, res) => {
 
   const links = {
     create: {
-      href: `${host}/checkout/orders`,
+      href: `${host}/orders`,
       method: "POST",
     },
     userOrders: {
